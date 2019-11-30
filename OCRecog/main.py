@@ -1,6 +1,9 @@
 import pytesseract as pt
 import re
-text = pt.image_to_string('Sample Images/walmart3.jpg')
+import json
+
+text = pt.image_to_string('Sample Images/costco1.jpg')
+text = ''.join([i if ord(i) < 128 else ' ' for i in text])
 
 fs = open("text.txt", 'w')
 fs.write(text)
@@ -13,7 +16,6 @@ totalItemsSold = "N/A"
 total = "0"
 tax = "0"
 
-#Adding
 with open("text.txt") as fp:
     line = fp.readline().lower()
     while line:
@@ -58,7 +60,6 @@ with open("text.txt") as fp:
 
         line = fp.readline().lower()
 
-
 subtotal = float(subtotal)
 total = float(total)
 discount = float(discount)
@@ -76,8 +77,8 @@ if tax > 0 and total <= subtotal:
 if subtotal == 0:
     subtotal = total - tax
 
-print("Total items purchased = " + totalItemsSold)
-print("Total before tax =  %.2f" %subtotal)
-print("Tax = %.2f" %tax)
-print("Total bill after tax =  %.2f" %total)
-print("Total discount = ", float(discount))
+resultList = {"Total items purchased": totalItemsSold, "Total before tax": subtotal,
+              "Tax": round(float(tax), 2), "Total bill after tax": round(float(total), 2), "Total discount": round(float(discount), 2)}
+
+resultList = json.dumps(resultList)
+print(resultList)
