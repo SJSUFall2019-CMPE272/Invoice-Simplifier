@@ -20,7 +20,16 @@ const Users = new mongoose.Schema({
 	},
 	token: {
 		type: String
-	}
+	},
+	invoicesData: [{
+		invoiceId: String,
+		billIssuedBy : String,
+		totalItemsPurchased : String,
+		subTotal : Number,
+		tax : Number,
+		totalBillAfterTax : Number,
+		totalDiscount: Number
+	}]
 })
 
 Users.methods.generateToken = function generateToken() {

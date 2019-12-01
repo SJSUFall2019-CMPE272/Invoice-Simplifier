@@ -9,6 +9,8 @@ require('../../../middlewares/passport')
 import passport from 'passport'
 
 router.post('/createUser', validation(validator['createUser']), userController.createUser)
-router.post('/uploadInvoice', validation(validator['uploadInvoice']), userController.uploadInvoice)
+router.post('/uploadInvoice/:userId', validation(validator['uploadInvoice']), passport.authenticate('jwt', { session: false }), userController.uploadInvoice)
+router.put('/updateInvoice/:userId', validation(validator['updateInvoice']), passport.authenticate('jwt', { session: false }), userController.updateInvoice)
+router.get('/getInvoices/:userId', validation(validator['getInvoices']), passport.authenticate('jwt', { session: false }), userController.getInvoices)
 
 module.exports = router

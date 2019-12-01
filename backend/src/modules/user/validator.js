@@ -23,6 +23,37 @@ module.exports = {
 		},
 		model: 'uploadInvoice',
 		group: "User",
-		description: "Get user profile details based on userid"
-	}
+		description: "Upload invoice"
+	},
+	updateInvoice: {
+		path: {
+			userId: Joi.string().required()
+		},
+		body: {
+			invoiceId: Joi.string().required(),
+			billIssuedBy: Joi.string(),
+			totalItemsPurchased: Joi.string(),
+			subtotal: Joi.number(),
+			tax: Joi.number(),
+			totalBillAfterTax: Joi.number(),
+			totalDiscount: Joi.number()
+		},
+		header: {
+			authorization: Joi.string().required()
+		},
+		model: 'uploadInvoice',
+		group: "User",
+		description: "Update invoice details based on userid"
+	},
+	getInvoices: {
+		path: {
+			userId: Joi.string().required()
+		},
+		header: {
+			authorization: Joi.string().required()
+		},
+		model: 'getInvoices',
+		group: "User",
+		description: "Get all the invoices based on userid"
+	},
 }
