@@ -31,8 +31,7 @@ exports.createUser = async (req, res) => {
 			createdUser = createdUser.toJSON()
 			createdUser.token = token
 		}
-
-		let userId = user._id || createdUser._id
+		let userId = user ? user._id : createdUser._id
 		console.log('userid-->', userId)
 		await Users.findByIdAndUpdate(mongoose.Types.ObjectId(userId), { token: token })
 
