@@ -20,33 +20,6 @@ const Users = new mongoose.Schema({
 	}
 })
 
-// Users.pre('save', function preSave(next) {
-// 	try {
-// 		const user = this
-// 		if (!user.isModified('password')) {
-// 			return next()
-// 		}
-// 		let salt = bcrypt.genSaltSync(10)
-// 		var hash = bcrypt.hashSync(user.password, salt)
-// 		user.password = hash
-// 		next(null)
-// 	} catch (error) {
-// 		next(error)
-// 	}
-// })
-
-// Users.methods.validatePassword = function validatePassword(password) {
-// 	const user = this
-// 	return new Promise((resolve, reject) => {
-// 		try {
-// 			let isMatch = bcrypt.compareSync(password, user.password)
-// 			resolve(isMatch)
-// 		} catch (error) {
-// 			resolve(false)
-// 		}
-// 	})
-// }
-
 Users.methods.generateToken = function generateToken() {
 	const user = this
 

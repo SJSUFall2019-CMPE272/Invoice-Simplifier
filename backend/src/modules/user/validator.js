@@ -14,14 +14,14 @@ module.exports = {
 		group: "User",
 		description: "Create user and save details in database"
 	},
-	getProfile: {
+	uploadInvoice: {
 		path: {
 			userId: Joi.string().required()
 		},
 		header: {
 			authorization: Joi.string().required()
 		},
-		model: 'getUserDetails',
+		model: 'uploadInvoice',
 		group: "User",
 		description: "Get user profile details based on userid"
 	}

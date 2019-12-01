@@ -2,7 +2,9 @@
 
 import Users from '../../../models/mongoDB/users'
 import constants from '../../../utils/constants'
-import mongoose from 'mongoose'
+import fs from 'fs'
+const {PythonShell} = require('python-shell')
+
 
 /**
  * Create user and save data in database.
@@ -37,54 +39,32 @@ exports.createUser = async (req, res) => {
 }
 
 /**
- * Login user and send auth token and user details in response.
+ * Upload invoice file.
  * @param  {Object} req request object
  * @param  {Object} res response object
  */
-exports.loginUser = async (req, res) => {
+exports.uploadInvoice = async (req, res) => {
 	try {
-		var user,
-			isAuth = false
+		console.log("in upload invoice api")
 
-		user = await Users.findOne({ email: req.body.loginId })
-
-		if (user) {
-			const validate = await user.validatePassword(req.body.password)
-			if (validate) {
-				const token = user.generateToken()
-				user = user.toJSON()
-				delete user.password
-				user.token = token
-				isAuth = true
-				return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user)
+	// put code for s3 file upload
+		var options = {
+			args:
+				[
+					'https://invoicesimplifiierimagestore.s3.us-east-2.amazonaws.com/walmart1.jpg'
+				]
+		}
+		PythonShell.run('../../../../OCRecog/main.py', options, function (err, data) {
+			console.log('data coming from python script')
+			if (err) {
+				console.log('error in python script---->', err)
+				return res.status(500).send(err)
 			}
-		}
-		if (!isAuth) {
-			return res.status(constants.STATUS_CODE.UNAUTHORIZED_ERROR_STATUS).send(constants.MESSAGES.AUTHORIZATION_FAILED)
-		}
+			console.log('data received from python script', data)
+			res.status(200).send(data)
+		  });
 	} catch (error) {
-		console.log(`Error while logging in user ${error}`)
-		return res.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS).send(error.message)
-	}
-}
-
-/**
- * Get user profile details based on userid.
- * @param  {Object} req request object
- * @param  {Object} res response object
- */
-exports.getUserProfile = async (req, res) => {
-	try {
-		let details = await Users.findById(mongoose.Types.ObjectId(req.params.userId))
-		if (details) {
-			details = details.toJSON()
-			delete details.password
-			return res.status(200).send(details)
-		} else {
-			return res.status(204).json()
-		}
-	} catch (error) {
-		console.log(`Error while getting user profile details ${error}`)
+		console.log(`Error while uploading invoice file ${error}`)
 		return res.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS).send(error.message)
 	}
 }
