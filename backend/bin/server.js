@@ -9,7 +9,6 @@ import cors from 'cors'
 
 let usersRouter = require('../src/modules/user/router/users')
 
-
 require('../src/models/mongoDB/index')
 
 let app = express()

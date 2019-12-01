@@ -6,6 +6,7 @@
     "start": "./node_modules/.bin/nodemon index.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.580.0",
     "babel-core": "^6.26.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015-node5": "^1.2.0",
@@ -23,17 +24,14 @@
     "http-errors": "~1.6.3",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
-    "mocha": "^6.2.1",
     "mongoose": "^5.7.5",
     "mongoose-type-email": "^1.0.11",
     "morgan": "~1.9.1",
-    "multer": "^1.4.2",
-    "mysql2": "^1.7.0",
     "nodemon": "^1.19.4",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "path": "^0.12.7",
-    "sequelize": "^5.19.0",
+    "python-shell": "^1.0.8",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

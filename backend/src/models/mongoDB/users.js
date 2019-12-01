@@ -17,6 +17,9 @@ const Users = new mongoose.Schema({
 	email: mongoose.SchemaTypes.Email,
 	phone: {
 		type: Number
+	},
+	token: {
+		type: String
 	}
 })
 

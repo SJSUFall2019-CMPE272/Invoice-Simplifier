@@ -2,7 +2,6 @@
 
 import Users from '../../../models/mongoDB/users'
 import constants from '../../../utils/constants'
-import fs from 'fs'
 const {PythonShell} = require('python-shell')
 
 
@@ -51,17 +50,18 @@ exports.uploadInvoice = async (req, res) => {
 		var options = {
 			args:
 				[
+					//put the s3 url below after uploading the received file in request
 					'https://invoicesimplifiierimagestore.s3.us-east-2.amazonaws.com/walmart1.jpg'
 				]
 		}
-		PythonShell.run('../../../../OCRecog/main.py', options, function (err, data) {
+		PythonShell.run(`${__dirname}/OCRecog/main.py`, options, function (err, data) {
 			console.log('data coming from python script')
 			if (err) {
 				console.log('error in python script---->', err)
 				return res.status(500).send(err)
 			}
-			console.log('data received from python script', data)
-			res.status(200).send(data)
+			console.log('data received from python script', JSON.parse(data))
+			res.status(200).send(JSON.parse(data))
 		  });
 	} catch (error) {
 		console.log(`Error while uploading invoice file ${error}`)
