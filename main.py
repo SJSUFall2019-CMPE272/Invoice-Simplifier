@@ -8,7 +8,7 @@ from nltk.tag.stanford import StanfordNERTagger
 nltk.download('punkt')
 nltk.download('stopwords')
 
-text = pt.image_to_string('Sample Images/walmart3.jpg')
+text = pt.image_to_string('walmart3.jpg')
 text = ''.join([i if ord(i) < 128 else ' ' for i in text])
 jar = './stanford-ner.jar'
 model = './english.all.3class.distsim.crf.ser.gz'
