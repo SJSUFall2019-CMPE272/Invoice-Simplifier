@@ -90,7 +90,7 @@ exports.uploadInvoice = async (req, res) => {
 			resultObj['invoiceId'] = invoiceId
 			console.log('Result Object', resultObj)
 			console.log('userId-->', req.params.userId)
-			await Users.updateOne({ _id: mongoose.Types.ObjectId(req.params.userId) }, { $push: { invoicesData: resultObj } })
+			await Users.updateOne({ uid : req.params.userId }, { $push: { invoicesData: resultObj } })
 
 			res.status(200).send(resultObj)
 		})
@@ -109,7 +109,7 @@ exports.updateInvoice = async (req, res) => {
 	console.log("userId & invoiceId-->", req.params.userId, req.body.invoiceId)
 	try {
 		await Users.updateOne(
-			{ _id: mongoose.Types.ObjectId(req.params.userId), 'invoicesData.invoiceId': req.body.invoiceId },
+			{ uid : req.params.userId, 'invoicesData.invoiceId': req.body.invoiceId },
 			{
 				$set: {
 					'invoicesData.$.billIssuedBy': req.body.billIssuedBy,
@@ -135,7 +135,7 @@ exports.updateInvoice = async (req, res) => {
 exports.getInvoices = async (req, res) => {
 	console.log("userId-->", req.params.userId)
 	try {
-		let userObj = await Users.findOne({ _id: mongoose.Types.ObjectId(req.params.userId), 'invoicesData.invoiceId': req.body.invoiceId })
+		let userObj = await Users.findOne({ uid : req.params.userId, 'invoicesData.invoiceId': req.body.invoiceId })
 		console.log("userObj-->", userObj)
 		let invoiceList = userObj.invoicesData
 		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(invoiceList)
