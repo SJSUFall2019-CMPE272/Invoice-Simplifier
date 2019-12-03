@@ -1,0 +1,49 @@
+.init{
+    margin-top: 0px;
+    width: 100%;
+    height: 1000px;
+    padding-top: 15%;
+    background-color:rgb(51,58,65);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgb(255, 0, 0), 0 6px 20px 0 rgb(255, 0, 0);
+}
+
+.init1{
+    background-color: white;
+}
+
+.final1{
+    background-color: rgba(0, 26, 255, 0.404);
+    -webkit-transition: all 6s;
+    transition: all 6s;
+    height: 1000px;
+}
+
+.final{
+    width: 20%;
+    height: 240px;
+    margin-top: 15%;
+    margin-left: 40%;
+    padding-top: 30px;
+    background-color:rgb(51,58,65);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgb(255, 0, 0), 0 6px 20px 0 rgb(255, 0, 0);
+    -webkit-transition: all 0.1s;
+    transition: all 0.1s;
+    /* -webkit-animation: mymove 0.5s;  Safari 4.0 - 8.0 */
+    /* animation: mymove 0.5s; */
+    /* -webkit-animation-iteration-count: infinite; */
+    /* animation-iteration-count: infinite; */
+    /* -webkit-animation-direction: alternate; */
+    /* animation-direction: alternate; */
+}
+
+/* @-webkit-keyframes mymove {
+    from {width: 20%; height: 240px; margin-left: 40%;}
+    to {width: 22%; height: 250px; margin-left: 39%;}
+  }
+  
+  @keyframes mymove {
+    from {width: 20%; height: 240px; margin-left: 40%;}
+    to {width: 22%; height: 250px; margin-left: 39%;}
+  } */
