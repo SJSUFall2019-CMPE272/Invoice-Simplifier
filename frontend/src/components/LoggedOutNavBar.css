@@ -1,0 +1,29 @@
+.loginButton{
+    border-style:solid;
+    border-width:2px;
+    border-radius:10px; 
+    padding:10px;
+    margin-right: 10px;
+    height: auto;
+    color:white;
+}
+
+.loginButton:hover{
+    -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 0.05s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: 3;
+    animation-name: example;
+    animation-duration: 0.05s;
+    animation-iteration-count: 3;
+}
+
+@-webkit-keyframes example {
+    from {padding-left: 10px;padding-right: 10px;margin-right: 10px;}
+    to {padding-left: 20px;padding-right: 20px;margin-right: 0px;}
+  }
+  
+  /* Standard syntax */
+  @keyframes example {
+    from {padding-left: 10px;padding-right: 10px;margin-right: 10px;}
+    to {padding-left: 20px;padding-right: 20px;margin-right: 0px;}
+  }
