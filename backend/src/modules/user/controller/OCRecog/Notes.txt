@@ -1,2 +1,0 @@
-1. try out median = cv2.bilateralFilter(img, 5, 75, 75)
-https://stackabuse.com/python-for-nlp-introduction-to-the-pattern-library/

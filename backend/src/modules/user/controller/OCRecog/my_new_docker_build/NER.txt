@@ -1,0 +1,102 @@
+Walmart	$387.66
+Bentonville, AR	5,263
+2	Amazon.com	$120.93
+3	The Kroger Co.	$119.70	Cincinnati, OH	3,035
+4	Costco	$101.43	Issaquah, WA	523
+5	Walgreens Boots Alliance	$98.39	Deerfield, IL	9,451
+6	The Home Depot	$97.27	Atlanta, GA	1,969
+7	CVS Health Corporation	$83.79	Woonsocket, RI	9,954
+8	Target	$74.48	Minneapolis, MN	1,844
+9	Lowe's Companies	$64.09	Mooresville, NC	1,723
+10	Albertsons Companies	$59.71	Boise, ID	2,249
+11	Apple Stores / iTunes	$47.27	Cupertino, CA	271
+12	Royal Ahold Delhaize USA	$43.80	Carlisle, PA	1,958
+13	Best Buy	$39.19	Richfield, MN	1,024
+14	McDonald's	$38.53	Oak Brook, IL	14,155
+15	Publix Super Markets	$36.52	Lakeland, FL	1,444
+16	TJX Companies
+$29.59	Framingham, MA	3,092
+17	ALDI	$28.78	Batavia, IL	2,386
+18	Dollar General	$25.63	Goodlettsville, TN	15,472
+19	Macy's	$24.90	Cincinnati, OH	867
+20	H.E. Butt Grocery	$24.02	San Antonio, TX	333
+21	Dollar Tree	$22.48	Chesapeake, VA	15,012
+22	Verizon Wireless	$22.26	New York, NY	6,839
+23	Kohl's	$19.17	Menomonee Falls, WI	1,175
+24	Yum! Brands	$18.63	Louisville, KY	17,504
+25	Meijer	$17.69	Grand Rapids, MI	242
+26	Starbucks	$17.41	Seattle, WA	13,172
+27	Ace Hardware	$17.32	Oak Brook, IL	4,426
+28	Wakefern / Shoprite	$16.57	Keasbey, NJ	352
+29	7-Eleven	$16.51	Dallas, TX	8,951
+30	AT&T Wireless	$16.41	Dallas, TX	2,004
+31	Rite Aid	$15.83	Camp Hill, PA	2,550
+32	Nordstrom	$15.06	Seattle, WA	366
+33	Ross Stores	$14.96	Pleasanton, CA	1,715
+34	BJ's Wholesale Club	$13.01	Westborough, MA	217
+35	Gap	$12.88	San Francisco, CA	2,296
+36	Alimentation Couche-Tard	$12.46	Tempe, AZ	6,872
+37	Bed Bath & Beyond	$12.23	Union, NJ	1,481
+38	Menard	$11.69	Eau Claire, WI	310
+39	J.C. Penney Company	$11.66	Plano, TX	864
+40	L Brands	$11.34	Columbus, OH	2,722
+41	Qurate Retail	$11.34	Englewood, CO	-
+42	Health Mart Systems	$10.62	Omaha, NE	4,953
+43	Subway / Doctor's Associates	$10.42	Milford, CT	26,932
+44	Hy-Vee	$10.15	West Des Moines, IA	250
+45	Chick-Fil-A	$10.00	Atlanta, GA	2,102
+46	Burger King Worldwide	$9.94	Miami, FL	7,362
+47	Good Neighbor Pharmacy	$9.58	Chesterbrook, PA	2,962
+48	O’Reilly Auto Parts	$9.54	Springfield, MO	5,219
+49	Southeastern Grocers (BI-LO)	$9.48	Jacksonville, FL	654
+50	AutoZone	$9.46	Memphis, TN	5,552
+51	Wendy's	$9.40	Dublin, OH	5,739
+52	Dunkin' Brands Group	$9.40	Canton, MA	11,366
+53	Giant Eagle	$9.13	O'Hara Township, PA	426
+54	Wegmans Food Market	$9.05	Rochester, NY	98
+55	Sherwin-Williams	$8.71	Cleveland, OH	4,032
+56	PetSmart	$8.70	Phoenix, AZ	1,507
+57	Darden Restaurants	$8.62	Orlando, FL	1,734
+58	Dick's Sporting Goods	$8.25	Coraopolis, PA	858
+59	Tractor Supply Co.	$8.09	Brentwood, TN	1,940
+60	Sears Holdings	$7.72	Hoffman Estates, IL	397
+61	WinCo Foods	$7.69	Boise, ID	125
+62	Army & Air Force Exchange Service	$7.50	Dallas, TX	901
+63	Staples	$7.24	Framingham, MA	1,139
+64	Save-A-Lot	$7.13	Earth City, MO	1,262
+65	Dine Brands Global	$6.76	Glendale, CA	3,495
+66	Ulta Salon, Cosmetics & Fragrance	$6.72	Bolingbrook, IL	1,174
+67	Bass Pro	$6.71	Springfield, MO	161
+68	Burlington	$6.58	Burlington, NJ	664
+69	Ascena Retail Group	$6.53	Suffern, NY	4,543
+70	Domino's Pizza	$6.51	Ann Arbor, MI	5,371
+71	Dillard's	$6.12	Little Rock, AR	5,371
+72	IKEA North America Svcs	$6.05	Conshohocken, PA	49
+73	Office Depot	$6.00	Boca Raton, FL	1,361
+74	Foot Locker	$5.96	New York, NY	2,071
+75	GameStop	$5.89	Grapevine, TX	3,896
+76	Sephora (LVMH)	$5.81	San Francisco, CA	396
+77	Wayfair	$5.75	Boston, MA	-
+78	AVB Brandsource	$5.70	Tustin, CA	3,073
+79	Panera Bread Company	$5.63	St. Louis, MO	2,036
+80	Williams-Sonoma	$5.47	San Francisco, CA	595
+81	Big Lots	$5.24	Columbus, OH	1,401
+82	Hobby Lobby Stores	$5.22	Oklahoma City, OK	883
+83	Sprout's Farmers Market	$5.21	Phoenix, AZ	313
+84	Speedway	$5.19	Enon, OH	2,774
+85	Signet Jewelers	$5.10	Akron, OH	2,950
+86	Defense Commiss. Agency	$4.98	Fort Lee, VA	238
+87	Academy	$4.90	Katy, TX	259
+88	Saks Fifth Avenue / Lord & Taylor	$4.90	New York, NY	194
+89	True Value Co.	$4.86	Chicago, IL	4,286
+90	Chipotle Mexican Grill	$4.79	Denver, CO	2,221
+91	Discount Tire	$4.79	Scottsdale, AR	1,003
+92	Michaels Stores	$4.78	Irving, TX	1,124
+93	Camping World	$4.77	Lincolnshire, IL	217
+94	Exxon Mobil Corporation	$4.76	Irving, TX	3,311
+95	Neiman Marcus	$4.54	Dallas, TX	71
+96	Jack In The Box	$4.46	San Diego, CA	2,954
+97	Sonic	$4.44	Oklahoma City, OK	3,557
+98	Belk	$4.38	Charlotte, NC	292
+99	Shell Oil Company	$4.22	Houston, TX	4,406
+100	Stater Bros Holdings	$4.19	San Bernardino, CA	171

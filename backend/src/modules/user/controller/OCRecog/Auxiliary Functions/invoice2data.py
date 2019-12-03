@@ -1,12 +1,33 @@
 import PyPDF2
 import textract
+import docx
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import nltk
-# nltk.download('punkt')
-# nltk.download('stopwords')
-# write a for-loop to open many files -- leave a comment if you'd #like to learn how
-filename = 'sample.pdf'
+from pdf2image import convert_from_path, convert_from_bytes
+from pdf2image.exceptions import (
+    PDFInfoNotInstalledError,
+    PDFPageCountError,
+    PDFSyntaxError
+)
+from PIL import Image
+
+nltk.download('punkt')
+nltk.download('stopwords')
+
+# write a for-loop to open many files
+filename = 'Sample PDFs/sample1.pdf'
+
+
+
+
+
+
+
+
+
+
+
 # open allows you to read the file
 pdfFileObj = open(filename, 'rb')
 # The pdfReader variable is a readable object that will be parsed
@@ -38,5 +59,31 @@ stop_words = stopwords.words('english')
 # We create a list comprehension which only returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
 keywords = [word for word in tokens if not word in stop_words and not word in punctuations]
 
+for i in range(0, len(keywords)):
+    if keywords[i] == "Total" and keywords[i + 1] == "Amount" and keywords[i + 2] == "Due":
+        text = keywords[i] + " " + keywords[i + 1] + " " + keywords[i + 2] + " " \
+               + keywords[i + 5]
+        break
 
-print (text)
+print(text)
+
+for i in range(0, len(keywords)):
+    if keywords[i] == "Account" and keywords[i + 1] == "No":
+        text = keywords[i] + " " + keywords[i + 1] + " " + keywords[i + 2]
+        break
+
+print(text)
+
+for i in range(0, len(keywords)):
+    if keywords[i] == "Statement" and keywords[i + 1] == "Date":
+        text = keywords[i] + " " + keywords[i + 1] + " " + keywords[i + 2]
+        break
+
+print(text)
+
+for i in range(0, len(keywords)):
+    if keywords[i] == "Due" and keywords[i + 1] == "Date":
+        text = keywords[i] + " " + keywords[i + 1] + " " + keywords[i + 2]
+        break
+
+print(text)
