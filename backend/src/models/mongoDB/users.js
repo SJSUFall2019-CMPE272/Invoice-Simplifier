@@ -28,7 +28,8 @@ const Users = new mongoose.Schema({
 		subTotal : Number,
 		tax : Number,
 		totalBillAfterTax : Number,
-		totalDiscount: Number
+		totalDiscount: Number,
+		date: String
 	}]
 })
 

@@ -56,4 +56,29 @@ module.exports = {
 		group: "User",
 		description: "Get all the invoices based on userid"
 	},
+	getMonthlyStats: {
+		path: {
+			userId: Joi.string().required()
+		},
+		query: {
+			month: Joi.string().required()
+		},
+		header: {
+			authorization: Joi.string().required()
+		},
+		model: 'getMonthlyStats',
+		group: "User",
+		description: "Get all the monthly stats based on userid and month"
+	}, 
+	getMonthlyExpenditure: {
+		path: {
+			userId: Joi.string().required()
+		},
+		header: {
+			authorization: Joi.string().required()
+		},
+		model: 'getMonthlyStats',
+		group: "User",
+		description: "Get all the monthly stats based on userid and month"
+	}
 }
