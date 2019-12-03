@@ -10,7 +10,7 @@ bigram_path = pkg_resources.resource_filename(
 sym_spell.load_dictionary(dictionary_path, term_index=0, count_index=1)
 sym_spell.load_bigram_dictionary(bigram_path, term_index=0, count_index=2)
 
-s = "Ciient's Name"
+s = "02/05/2016"
 input_term = (s.replace(" ", "")).lower()
 
 suggestions = sym_spell.lookup_compound(s, max_edit_distance=2)
