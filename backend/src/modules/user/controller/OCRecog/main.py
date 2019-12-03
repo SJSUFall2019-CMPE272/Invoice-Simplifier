@@ -6,8 +6,16 @@ import sys
 from nltk.tag.stanford import StanfordNERTagger
 from pdf2image import convert_from_path
 from datetime import date
+import boto3
+import os
 
-items = {}
+link = sys.argv[0]
+
+filename = link.split('/')[-1]
+s3 = boto3.resource('s3', aws_access_key_id='AKIAJ6W7C53L7BJHBFYQ',
+                    aws_secret_access_key='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')
+s3.Bucket('invoice-simplifier-file-store').download_file(filename, filename)
+
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
@@ -18,8 +26,7 @@ try:
 except LookupError:
     nltk.download('stopwords')
 
-filename = 'Sample PDFs/sample1.pdf'
-if filename.split('.')[1] == 'pdf':
+if filename.split('.')[-1] == 'pdf':
     pages = convert_from_path(filename)
 
     for page in pages:
@@ -41,6 +48,8 @@ fs = open("text.txt", 'w')
 fs.write(text)
 fs.close()
 
+# The below section is to get all the individual items
+items = {}
 if filename.split('.')[0] == 'out':
     subLine = False
     itemCount = 0
@@ -82,13 +91,13 @@ with open("text.txt") as fp:
         list = line.lower().split()
         if "subtotal" in line:
             tempSubtotal = list[-1]
-            tempSubtotal = re.sub("[@#$%^&,*(){}:‘'^A-Za-z]", "0", tempSubtotal)
+            tempSubtotal = re.sub("[@#$%^&,*(){}:‘'^A-Za-z]", "", tempSubtotal)
             tempSubtotal = float(''.join(e for e in tempSubtotal))
             subtotal = float(subtotal)
             subtotal = tempSubtotal
         if "sub total" in line:
             tempSubtotal = list[-1]
-            tempSubtotal = re.sub("[@#$%^,&*(){}:‘'^A-Za-z]", "0", tempSubtotal)
+            tempSubtotal = re.sub("[@#$%^,&*(){}:‘'^A-Za-z]", "", tempSubtotal)
             tempSubtotal = float(''.join(e for e in tempSubtotal))
             subtotal = float(subtotal)
             subtotal = tempSubtotal
@@ -99,23 +108,23 @@ with open("text.txt") as fp:
             continue
         if "discount" in line:
             discount = list[-1]
-            discount = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "0", discount)
+            discount = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", discount)
             discount = float(''.join(e for e in discount if e.isdigit() or e == '.'))
         if "(h)hst" in line:
             tempTax = list[-1]
-            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "0", tempTax)
+            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", tempTax)
             tempTax = float(''.join(e for e in tempTax if e.isdigit() or e == '.'))
             tax = float(tax)
             tax += tempTax
         if "tax" in line:
             tempTax = list[-1]
-            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "0", tempTax)
+            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", tempTax)
             tempTax = float(''.join(e for e in tempTax if e.isdigit() or e == '.'))
             tax = float(tax)
             tax += tempTax
         if "total" in line and "subtotal" not in line and "sub total" not in line:
             tempTotal = list[-1]
-            tempTotal = re.sub("[@#$%^&*,(){}:‘'^A-Za-z]", "0", tempTotal)
+            tempTotal = re.sub("[@#$%^&*,(){}:‘'^A-Za-z]", "", tempTotal)
             tempTotal = float(''.join(e for e in tempTotal if e.isdigit() or e == '.'))
             total = float(total)
             total += tempTotal
@@ -448,7 +457,138 @@ lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", 
           "cranberries": "fruit", "feijoa": "fruit", "grapes": "fruit", "guava": "fruit", "huckleberries": "fruit",
           "jujube": "fruit", "keylimes": "fruit", "kumquats": "fruit", "muscadinegrapes": "fruit", "mushrooms": "fruit",
           "passionfruit": "fruit", "pear": "fruit", "persimmons": "fruit", "pineapple": "fruit", "pomegranate": "fruit",
-          "quince": "fruit", "sapote": "fruit", "sharonfruit": "fruit", "sugarapple": "fruit", "5.11 tactical" : "clothing", "7 for all mankind" : "clothing", "'47 (brand)" : "clothing", "6126 (clothing line)" : "clothing", "a.k.o.o. clothing" : "clothing", "abby z." : "clothing", "abercrombie & fitch" : "clothing", "5.11 tactical " : "clothing", "7 for all mankind" : "clothing", "47 (brand)" : "clothing", "6126 (clothing line)" : "clothing", "a.k.o.o. clothing" : "clothing", "abby z." : "clothing", "abercrombie & fitch" : "clothing", "acapulco gold (clothing brand)" : "clothing", "acorn stores" : "clothing", "aeropostale" : "clothing", "agv sports group" : "clothing", "al wissam" : "clothing", "american apparel" : "clothing", "american eagle outfitters" : "clothing", "anarchic adjustment" : "clothing", "anchor blue clothing company" : "clothing", "andrew christian" : "clothing", "andrew marc" : "clothing", "angels jeanswear" : "clothing", "anthropologie" : "clothing", "anti social social club" : "clothing", "apple bottoms" : "clothing", "aquashift" : "clothing", "ashworth (clothing)" : "clothing", "atticus clothing" : "clothing", "avirex" : "clothing", "baby gap" : "clothing", "baby phat" : "clothing", "baci lingerie" : "clothing", "banana republic" : "clothing", "ben davis (clothing)" : "clothing", "bernini (fashion)" : "clothing", "bhldn" : "clothing", "big johnson" : "clothing", "bill blass group" : "clothing", "billionaire boys club (clothing retailer)" : "clothing", "blair corporation" : "clothing", "bobby jack brand" : "clothing", "born uniqorn" : "clothing", "botany 500" : "clothing", "brooks brothers" : "clothing", "thom browne" : "clothing", "buck mason" : "clothing", "buckle (clothing retailer)" : "clothing", "callaway golf company" : "clothing", "calvin klein (company)" : "clothing", "carlos campos (clothing brand)" : "clothing", "capezio" : "clothing", "carhartt" : "clothing", "carlisle collection" : "clothing", "justin cassin" : "clothing", "charivari (store)" : "clothing", "charlotte russe (clothing retailer)" : "clothing", "charming charlie" : "clothing", "cherokee inc." : "clothing", "chrome hearts" : "clothing", "ck calvin klein" : "clothing", "club monaco" : "clothing", "coach new york" : "clothing", "coldwater creek" : "clothing", "columbia sportswear" : "clothing", "commonwealth utilities" : "clothing", "converse (shoe company)" : "clothing", "crazy shirts" : "clothing", "cross colours" : "clothing", "dana buchman" : "clothing", "dcma collective" : "clothing", "delia's" : "clothing", "discovery expedition (clothing)" : "clothing", "dkny" : "clothing", "dl1961" : "clothing", "dockers (brand)" : "clothing", "dollie & me" : "clothing", "dolls kill" : "clothing", "draper james" : "clothing", "duck head" : "clothing", "e. y. wada" : "clothing", "eckhaus latta" : "clothing", "ecko unltd." : "clothing", "eddie bauer" : "clothing", "edun live on campus" : "clothing", "eggie (brand)" : "clothing", "the elder statesman (brand)" : "clothing", "element skateboards" : "clothing", "elizabeth suzann" : "clothing", "ella moss" : "clothing", "emel fashion" : "clothing", "enfants riches déprimés" : "clothing", "equipment (clothing brand)" : "clothing", "etcetera (clothing brand)" : "clothing", "etnies" : "clothing", "ex-boyfriend" : "clothing", "fabletics" : "clothing", "famous stars and straps" : "clothing", "femme for dkny" : "clothing", "figs ties" : "clothing", "filson (company)" : "clothing", "the fly stop" : "clothing", "forever 21" : "clothing", "fossil group" : "clothing", "free people" : "clothing", "freshjive" : "clothing", "frostline kits" : "clothing", "fubu" : "clothing", "fuchsia (clothing)" : "clothing", "fuct (clothing)" : "clothing", "diane von fürstenberg" : "clothing", "g-unit clothing company" : "clothing", "gant (retailer)" : "clothing", "gap inc." : "clothing", "gap kids" : "clothing", "georgine" : "clothing", "gilly hicks" : "clothing", "gitman bros" : "clothing", "golf wang" : "clothing", "guess (clothing)" : "clothing", "gypsy sport" : "clothing", "hamilton shirts" : "clothing", "c.f. hathaway company" : "clothing", "haus alkire" : "clothing", "healthtex" : "clothing", "helm boots" : "clothing", "tommy hilfiger (company)" : "clothing", "hollister co." : "clothing", "house of deréon" : "clothing", "the hundreds" : "clothing", "i. spiewak & sons" : "clothing", "ike behar" : "clothing", "imitation of christ (designs)" : "clothing", "inamorata (brand)" : "clothing", "isko (clothing company)" : "clothing", "island company" : "clothing", "ivy park" : "clothing", "izod" : "clothing", "j. press" : "clothing", "j.crew" : "clothing", "jams (clothing line)" : "clothing", "jennifer lopez collection" : "clothing", "the jessica simpson collection" : "clothing", "j.lo by jennifer lopez" : "clothing", "jnco" : "clothing", "john varvatos (company)" : "clothing", "johnny cupcakes" : "clothing", "johnston & murphy" : "clothing", "jordache" : "clothing", "jovani fashion" : "clothing", "jovovich-hawk" : "clothing", "juicy couture" : "clothing", "karen kane" : "clothing", "kani ladies" : "clothing", "karmaloop" : "clothing", "kate spade & company" : "clothing", "kenneth cole productions" : "clothing", "alan king (designer)" : "clothing", "kühl (clothing)" : "clothing", "l.a.m.b." : "clothing", "l.e.i." : "clothing", "l.l.bean" : "clothing", "l.l.bean signature" : "clothing", "la denim atelier" : "clothing", "lands' end" : "clothing", "le tigre (clothing brand)" : "clothing", "lee (jeans)" : "clothing", "level 27 clothing" : "clothing", "levi strauss & co." : "clothing", "lids (store)" : "clothing", "lifted research group" : "clothing", "lilli ann" : "clothing", "live breathe futbol" : "clothing", "loden dager" : "clothing", "los angeles apparel" : "clothing", "lucky brand jeans" : "clothing", "lularoe" : "clothing", "macbeth footwear" : "clothing", "mainbocher" : "clothing", "marc anthony collection" : "clothing", "marchesa (brand)" : "clothing", "martin + osa" : "clothing", "sid mashburn" : "clothing", "massive goods" : "clothing", "mataano" : "clothing", "members only (fashion brand)" : "clothing", "metal mulisha" : "clothing", "milly (fashion brand)" : "clothing", "ministry of supply (clothing)" : "clothing", "mitchell & ness" : "clothing", "mossimo" : "clothing", "munsingwear" : "clothing", "nice collective" : "clothing", "no fear" : "clothing", "noah (brand)" : "clothing", "the north face" : "clothing", "number lab" : "clothing", "oaklandish" : "clothing", "ocean pacific" : "clothing", "old navy" : "clothing", "opening ceremony (brand)" : "clothing", "original penguin" : "clothing", "orvis" : "clothing", "oshkosh b'gosh" : "clothing", "acapulco gold (clothing brand)" : "clothing", "acorn stores" : "clothing", "aeropostale" : "clothing", "agv sports group" : "clothing", "al wissam" : "clothing", "american apparel" : "clothing", "american eagle outfitters" : "clothing", "anarchic adjustment" : "clothing", "anchor blue clothing company" : "clothing", "andrew christian" : "clothing", "andrew marc" : "clothing", "angels jeanswear" : "clothing", "anthropologie" : "clothing", "anti social social club" : "clothing", "apple bottoms" : "clothing", "aquashift" : "clothing", "ashworth (clothing)" : "clothing", "atticus clothing" : "clothing", "avirex" : "clothing", "baby gap" : "clothing", "baby phat" : "clothing", "baci lingerie" : "clothing", "banana republic" : "clothing", "ben davis (clothing)" : "clothing", "bernini (fashion)" : "clothing", "bhldn" : "clothing", "big johnson" : "clothing", "bill blass group" : "clothing", "billionaire boys club (clothing retailer)" : "clothing", "blair corporation" : "clothing", "bobby jack brand" : "clothing", "born uniqorn" : "clothing", "botany 500" : "clothing", "brooks brothers" : "clothing", "thom browne" : "clothing", "buck mason" : "clothing", "buckle (clothing retailer)" : "clothing", "callaway golf company" : "clothing", "calvin klein (company)" : "clothing", "carlos campos (clothing brand)" : "clothing", "capezio" : "clothing", "carhartt" : "clothing", "carlisle collection" : "clothing", "justin cassin" : "clothing", "charivari (store)" : "clothing", "charlotte russe (clothing retailer)" : "clothing", "charming charlie" : "clothing", "cherokee inc." : "clothing", "chrome hearts" : "clothing", "ck calvin klein" : "clothing", "club monaco" : "clothing", "coach new york" : "clothing", "coldwater creek" : "clothing", "columbia sportswear" : "clothing", "commonwealth utilities" : "clothing", "converse (shoe company)" : "clothing", "crazy shirts" : "clothing", "cross colours" : "clothing", "dana buchman" : "clothing", "dcma collective" : "clothing", "delia's" : "clothing", "discovery expedition (clothing)" : "clothing", "dkny" : "clothing", "dl1961" : "clothing", "dockers (brand)" : "clothing", "dollie & me" : "clothing", "dolls kill" : "clothing", "draper james" : "clothing", "duck head" : "clothing", "e. y. wada" : "clothing", "eckhaus latta" : "clothing", "ecko unltd." : "clothing", "eddie bauer" : "clothing", "edun live on campus" : "clothing", "eggie (brand)" : "clothing", "the elder statesman (brand)" : "clothing", "element skateboards" : "clothing", "elizabeth suzann" : "clothing", "ella moss" : "clothing", "emel fashion" : "clothing", "enfants riches déprimés" : "clothing", "equipment (clothing brand)" : "clothing", "etcetera (clothing brand)" : "clothing", "etnies" : "clothing", "ex-boyfriend" : "clothing", "fabletics" : "clothing", "famous stars and straps" : "clothing", "femme for dkny" : "clothing", "figs ties" : "clothing", "filson (company)" : "clothing", "the fly stop" : "clothing", "forever 21" : "clothing", "fossil group" : "clothing", "free people" : "clothing", "freshjive" : "clothing", "frostline kits" : "clothing", "fubu" : "clothing", "fuchsia (clothing)" : "clothing", "fuct (clothing)" : "clothing", "diane von fürstenberg" : "clothing", "g-unit clothing company" : "clothing", "gant (retailer)" : "clothing", "gap inc." : "clothing", "gap kids" : "clothing", "georgine" : "clothing", "gilly hicks" : "clothing", "gitman bros" : "clothing", "golf wang" : "clothing", "guess (clothing)" : "clothing", "gypsy sport" : "clothing", "hamilton shirts" : "clothing", "c.f. hathaway company" : "clothing", "haus alkire" : "clothing", "healthtex" : "clothing", "helm boots" : "clothing", "tommy hilfiger (company)" : "clothing", "hollister co." : "clothing", "house of deréon" : "clothing", "the hundreds" : "clothing", "i. spiewak & sons" : "clothing", "ike behar" : "clothing", "imitation of christ (designs)" : "clothing", "inamorata (brand)" : "clothing", "isko (clothing company)" : "clothing", "island company" : "clothing", "ivy park" : "clothing", "izod" : "clothing", "j. press" : "clothing", "j.crew" : "clothing", "jams (clothing line)" : "clothing", "jennifer lopez collection" : "clothing", "the jessica simpson collection" : "clothing", "j.lo by jennifer lopez" : "clothing", "jnco" : "clothing", "john varvatos (company)" : "clothing", "johnny cupcakes" : "clothing", "johnston & murphy" : "clothing", "jordache" : "clothing", "jovani fashion" : "clothing", "jovovich-hawk" : "clothing", "juicy couture" : "clothing", "karen kane" : "clothing", "kani ladies" : "clothing", "karmaloop" : "clothing", "kate spade & company" : "clothing", "kenneth cole productions" : "clothing", "alan king (designer)" : "clothing", "kühl (clothing)" : "clothing", "l.a.m.b." : "clothing", "l.e.i." : "clothing", "l.l.bean" : "clothing", "l.l.bean signature" : "clothing", "la denim atelier" : "clothing", "lands' end" : "clothing", "le tigre (clothing brand)" : "clothing", "lee (jeans)" : "clothing", "level 27 clothing" : "clothing", "levi strauss & co." : "clothing", "lids (store)" : "clothing", "lifted research group" : "clothing", "lilli ann" : "clothing", "live breathe futbol" : "clothing", "loden dager" : "clothing", "los angeles apparel" : "clothing", "lucky brand jeans" : "clothing", "lularoe" : "clothing", "macbeth footwear" : "clothing", "mainbocher" : "clothing", "marc anthony collection" : "clothing", "marchesa (brand)" : "clothing", "martin + osa" : "clothing", "sid mashburn" : "clothing", "massive goods" : "clothing", "mataano" : "clothing", "members only (fashion brand)" : "clothing","metal mulisha" : "clothing","milly (fashion brand)" : "clothing","ministry of supply (clothing)" : "clothing","mitchell & ness" : "clothing","mossimo" : "clothing","munsingwear" : "clothing","nice collective" : "clothing","no fear" : "clothing","noah (brand)" : "clothing","the north face" : "clothing","number lab" : "clothing","oaklandish" : "clothing","ocean pacific" : "clothing","old navy" : "clothing","opening ceremony (brand)" : "clothing","original penguin" : "clothing","orvis" : "clothing"}
+          "quince": "fruit", "sapote": "fruit", "sharonfruit": "fruit", "sugarapple": "fruit",
+          "5.11 tactical": "clothing", "7 for all mankind": "clothing", "'47 (brand)": "clothing",
+          "6126 (clothing line)": "clothing", "a.k.o.o. clothing": "clothing", "abby z.": "clothing",
+          "abercrombie & fitch": "clothing", "5.11 tactical ": "clothing", "7 for all mankind": "clothing",
+          "47 (brand)": "clothing", "6126 (clothing line)": "clothing", "a.k.o.o. clothing": "clothing",
+          "abby z.": "clothing", "abercrombie & fitch": "clothing", "acapulco gold (clothing brand)": "clothing",
+          "acorn stores": "clothing", "aeropostale": "clothing", "agv sports group": "clothing",
+          "al wissam": "clothing", "american apparel": "clothing", "american eagle outfitters": "clothing",
+          "anarchic adjustment": "clothing", "anchor blue clothing company": "clothing", "andrew christian": "clothing",
+          "andrew marc": "clothing", "angels jeanswear": "clothing", "anthropologie": "clothing",
+          "anti social social club": "clothing", "apple bottoms": "clothing", "aquashift": "clothing",
+          "ashworth (clothing)": "clothing", "atticus clothing": "clothing", "avirex": "clothing",
+          "baby gap": "clothing", "baby phat": "clothing", "baci lingerie": "clothing", "banana republic": "clothing",
+          "ben davis (clothing)": "clothing", "bernini (fashion)": "clothing", "bhldn": "clothing",
+          "big johnson": "clothing", "bill blass group": "clothing",
+          "billionaire boys club (clothing retailer)": "clothing", "blair corporation": "clothing",
+          "bobby jack brand": "clothing", "born uniqorn": "clothing", "botany 500": "clothing",
+          "brooks brothers": "clothing", "thom browne": "clothing", "buck mason": "clothing",
+          "buckle (clothing retailer)": "clothing", "callaway golf company": "clothing",
+          "calvin klein (company)": "clothing", "carlos campos (clothing brand)": "clothing", "capezio": "clothing",
+          "carhartt": "clothing", "carlisle collection": "clothing", "justin cassin": "clothing",
+          "charivari (store)": "clothing", "charlotte russe (clothing retailer)": "clothing",
+          "charming charlie": "clothing", "cherokee inc.": "clothing", "chrome hearts": "clothing",
+          "ck calvin klein": "clothing", "club monaco": "clothing", "coach new york": "clothing",
+          "coldwater creek": "clothing", "columbia sportswear": "clothing", "commonwealth utilities": "clothing",
+          "converse (shoe company)": "clothing", "crazy shirts": "clothing", "cross colours": "clothing",
+          "dana buchman": "clothing", "dcma collective": "clothing", "delia's": "clothing",
+          "discovery expedition (clothing)": "clothing", "dkny": "clothing", "dl1961": "clothing",
+          "dockers (brand)": "clothing", "dollie & me": "clothing", "dolls kill": "clothing",
+          "draper james": "clothing", "duck head": "clothing", "e. y. wada": "clothing", "eckhaus latta": "clothing",
+          "ecko unltd.": "clothing", "eddie bauer": "clothing", "edun live on campus": "clothing",
+          "eggie (brand)": "clothing", "the elder statesman (brand)": "clothing", "element skateboards": "clothing",
+          "elizabeth suzann": "clothing", "ella moss": "clothing", "emel fashion": "clothing",
+          "enfants riches déprimés": "clothing", "equipment (clothing brand)": "clothing",
+          "etcetera (clothing brand)": "clothing", "etnies": "clothing", "ex-boyfriend": "clothing",
+          "fabletics": "clothing", "famous stars and straps": "clothing", "femme for dkny": "clothing",
+          "figs ties": "clothing", "filson (company)": "clothing", "the fly stop": "clothing", "forever 21": "clothing",
+          "fossil group": "clothing", "free people": "clothing", "freshjive": "clothing", "frostline kits": "clothing",
+          "fubu": "clothing", "fuchsia (clothing)": "clothing", "fuct (clothing)": "clothing",
+          "diane von fürstenberg": "clothing", "g-unit clothing company": "clothing", "gant (retailer)": "clothing",
+          "gap inc.": "clothing", "gap kids": "clothing", "georgine": "clothing", "gilly hicks": "clothing",
+          "gitman bros": "clothing", "golf wang": "clothing", "guess (clothing)": "clothing", "gypsy sport": "clothing",
+          "hamilton shirts": "clothing", "c.f. hathaway company": "clothing", "haus alkire": "clothing",
+          "healthtex": "clothing", "helm boots": "clothing", "tommy hilfiger (company)": "clothing",
+          "hollister co.": "clothing", "house of deréon": "clothing", "the hundreds": "clothing",
+          "i. spiewak & sons": "clothing", "ike behar": "clothing", "imitation of christ (designs)": "clothing",
+          "inamorata (brand)": "clothing", "isko (clothing company)": "clothing", "island company": "clothing",
+          "ivy park": "clothing", "izod": "clothing", "j. press": "clothing", "j.crew": "clothing",
+          "jams (clothing line)": "clothing", "jennifer lopez collection": "clothing",
+          "the jessica simpson collection": "clothing", "j.lo by jennifer lopez": "clothing", "jnco": "clothing",
+          "john varvatos (company)": "clothing", "johnny cupcakes": "clothing", "johnston & murphy": "clothing",
+          "jordache": "clothing", "jovani fashion": "clothing", "jovovich-hawk": "clothing",
+          "juicy couture": "clothing", "karen kane": "clothing", "kani ladies": "clothing", "karmaloop": "clothing",
+          "kate spade & company": "clothing", "kenneth cole productions": "clothing",
+          "alan king (designer)": "clothing", "kühl (clothing)": "clothing", "l.a.m.b.": "clothing",
+          "l.e.i.": "clothing", "l.l.bean": "clothing", "l.l.bean signature": "clothing",
+          "la denim atelier": "clothing", "lands' end": "clothing", "le tigre (clothing brand)": "clothing",
+          "lee (jeans)": "clothing", "level 27 clothing": "clothing", "levi strauss & co.": "clothing",
+          "lids (store)": "clothing", "lifted research group": "clothing", "lilli ann": "clothing",
+          "live breathe futbol": "clothing", "loden dager": "clothing", "los angeles apparel": "clothing",
+          "lucky brand jeans": "clothing", "lularoe": "clothing", "macbeth footwear": "clothing",
+          "mainbocher": "clothing", "marc anthony collection": "clothing", "marchesa (brand)": "clothing",
+          "martin + osa": "clothing", "sid mashburn": "clothing", "massive goods": "clothing", "mataano": "clothing",
+          "members only (fashion brand)": "clothing", "metal mulisha": "clothing", "milly (fashion brand)": "clothing",
+          "ministry of supply (clothing)": "clothing", "mitchell & ness": "clothing", "mossimo": "clothing",
+          "munsingwear": "clothing", "nice collective": "clothing", "no fear": "clothing", "noah (brand)": "clothing",
+          "the north face": "clothing", "number lab": "clothing", "oaklandish": "clothing", "ocean pacific": "clothing",
+          "old navy": "clothing", "opening ceremony (brand)": "clothing", "original penguin": "clothing",
+          "orvis": "clothing", "oshkosh b'gosh": "clothing", "acapulco gold (clothing brand)": "clothing",
+          "acorn stores": "clothing", "aeropostale": "clothing", "agv sports group": "clothing",
+          "al wissam": "clothing", "american apparel": "clothing", "american eagle outfitters": "clothing",
+          "anarchic adjustment": "clothing", "anchor blue clothing company": "clothing", "andrew christian": "clothing",
+          "andrew marc": "clothing", "angels jeanswear": "clothing", "anthropologie": "clothing",
+          "anti social social club": "clothing", "apple bottoms": "clothing", "aquashift": "clothing",
+          "ashworth (clothing)": "clothing", "atticus clothing": "clothing", "avirex": "clothing",
+          "baby gap": "clothing", "baby phat": "clothing", "baci lingerie": "clothing", "banana republic": "clothing",
+          "ben davis (clothing)": "clothing", "bernini (fashion)": "clothing", "bhldn": "clothing",
+          "big johnson": "clothing", "bill blass group": "clothing",
+          "billionaire boys club (clothing retailer)": "clothing", "blair corporation": "clothing",
+          "bobby jack brand": "clothing", "born uniqorn": "clothing", "botany 500": "clothing",
+          "brooks brothers": "clothing", "thom browne": "clothing", "buck mason": "clothing",
+          "buckle (clothing retailer)": "clothing", "callaway golf company": "clothing",
+          "calvin klein (company)": "clothing", "carlos campos (clothing brand)": "clothing", "capezio": "clothing",
+          "carhartt": "clothing", "carlisle collection": "clothing", "justin cassin": "clothing",
+          "charivari (store)": "clothing", "charlotte russe (clothing retailer)": "clothing",
+          "charming charlie": "clothing", "cherokee inc.": "clothing", "chrome hearts": "clothing",
+          "ck calvin klein": "clothing", "club monaco": "clothing", "coach new york": "clothing",
+          "coldwater creek": "clothing", "columbia sportswear": "clothing", "commonwealth utilities": "clothing",
+          "converse (shoe company)": "clothing", "crazy shirts": "clothing", "cross colours": "clothing",
+          "dana buchman": "clothing", "dcma collective": "clothing", "delia's": "clothing",
+          "discovery expedition (clothing)": "clothing", "dkny": "clothing", "dl1961": "clothing",
+          "dockers (brand)": "clothing", "dollie & me": "clothing", "dolls kill": "clothing",
+          "draper james": "clothing", "duck head": "clothing", "e. y. wada": "clothing", "eckhaus latta": "clothing",
+          "ecko unltd.": "clothing", "eddie bauer": "clothing", "edun live on campus": "clothing",
+          "eggie (brand)": "clothing", "the elder statesman (brand)": "clothing", "element skateboards": "clothing",
+          "elizabeth suzann": "clothing", "ella moss": "clothing", "emel fashion": "clothing",
+          "enfants riches déprimés": "clothing", "equipment (clothing brand)": "clothing",
+          "etcetera (clothing brand)": "clothing", "etnies": "clothing", "ex-boyfriend": "clothing",
+          "fabletics": "clothing", "famous stars and straps": "clothing", "femme for dkny": "clothing",
+          "figs ties": "clothing", "filson (company)": "clothing", "the fly stop": "clothing", "forever 21": "clothing",
+          "fossil group": "clothing", "free people": "clothing", "freshjive": "clothing", "frostline kits": "clothing",
+          "fubu": "clothing", "fuchsia (clothing)": "clothing", "fuct (clothing)": "clothing",
+          "diane von fürstenberg": "clothing", "g-unit clothing company": "clothing", "gant (retailer)": "clothing",
+          "gap inc.": "clothing", "gap kids": "clothing", "georgine": "clothing", "gilly hicks": "clothing",
+          "gitman bros": "clothing", "golf wang": "clothing", "guess (clothing)": "clothing", "gypsy sport": "clothing",
+          "hamilton shirts": "clothing", "c.f. hathaway company": "clothing", "haus alkire": "clothing",
+          "healthtex": "clothing", "helm boots": "clothing", "tommy hilfiger (company)": "clothing",
+          "hollister co.": "clothing", "house of deréon": "clothing", "the hundreds": "clothing",
+          "i. spiewak & sons": "clothing", "ike behar": "clothing", "imitation of christ (designs)": "clothing",
+          "inamorata (brand)": "clothing", "isko (clothing company)": "clothing", "island company": "clothing",
+          "ivy park": "clothing", "izod": "clothing", "j. press": "clothing", "j.crew": "clothing",
+          "jams (clothing line)": "clothing", "jennifer lopez collection": "clothing",
+          "the jessica simpson collection": "clothing", "j.lo by jennifer lopez": "clothing", "jnco": "clothing",
+          "john varvatos (company)": "clothing", "johnny cupcakes": "clothing", "johnston & murphy": "clothing",
+          "jordache": "clothing", "jovani fashion": "clothing", "jovovich-hawk": "clothing",
+          "juicy couture": "clothing", "karen kane": "clothing", "kani ladies": "clothing", "karmaloop": "clothing",
+          "kate spade & company": "clothing", "kenneth cole productions": "clothing",
+          "alan king (designer)": "clothing", "kühl (clothing)": "clothing", "l.a.m.b.": "clothing",
+          "l.e.i.": "clothing", "l.l.bean": "clothing", "l.l.bean signature": "clothing",
+          "la denim atelier": "clothing", "lands' end": "clothing", "le tigre (clothing brand)": "clothing",
+          "lee (jeans)": "clothing", "level 27 clothing": "clothing", "levi strauss & co.": "clothing",
+          "lids (store)": "clothing", "lifted research group": "clothing", "lilli ann": "clothing",
+          "live breathe futbol": "clothing", "loden dager": "clothing", "los angeles apparel": "clothing",
+          "lucky brand jeans": "clothing", "lularoe": "clothing", "macbeth footwear": "clothing",
+          "mainbocher": "clothing", "marc anthony collection": "clothing", "marchesa (brand)": "clothing",
+          "martin + osa": "clothing", "sid mashburn": "clothing", "massive goods": "clothing", "mataano": "clothing",
+          "members only (fashion brand)": "clothing", "metal mulisha": "clothing", "milly (fashion brand)": "clothing",
+          "ministry of supply (clothing)": "clothing", "mitchell & ness": "clothing", "mossimo": "clothing",
+          "munsingwear": "clothing", "nice collective": "clothing", "no fear": "clothing", "noah (brand)": "clothing",
+          "the north face": "clothing", "number lab": "clothing", "oaklandish": "clothing", "ocean pacific": "clothing",
+          "old navy": "clothing", "opening ceremony (brand)": "clothing", "original penguin": "clothing",
+          "orvis": "clothing"}
 
 distribution = {}
 
@@ -458,7 +598,6 @@ for i in items.keys():
         distribution[cat] += items[i]
     else:
         distribution[cat] = items[i]
-
 
 fixedList = []
 dynamicList = []
