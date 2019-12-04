@@ -62,13 +62,19 @@ if filename.split('.')[0] == 'out':
         l = line.rstrip().lower().split()
         if "item" in line.lower():
             itemCount = l[-1]
-            itemCount = int(re.sub("[@#$%^,&*(){}:‘'^A-Za-z]", "", itemCount))
+            itemCount = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", itemCount)
+            itemCount = int(itemCount.replace(',', ''))
             continue
         if subLine:
+            itemName = ""
+            for i in l:
+                if i != l[-1]:
+                    itemName += i + " "
             temp = l[-1]
+            itemName = itemName.rstrip()
             temp = re.sub("[@#$%^,&*(){}:‘'^A-Za-z]", "", temp)
             temp = float(temp)
-            items[l[0]] = temp
+            items[itemName] = temp
             addedItems += 1
             if addedItems == itemCount:
                 break
@@ -91,40 +97,47 @@ with open("text.txt") as fp:
         list = line.lower().split()
         if "subtotal" in line:
             tempSubtotal = list[-1]
-            tempSubtotal = re.sub("[@#$%^&,*(){}:‘'^A-Za-z]", "", tempSubtotal)
+            tempSubtotal = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempSubtotal)
+            tempSubtotal = tempSubtotal.replace(',', '')
             tempSubtotal = float(''.join(e for e in tempSubtotal))
             subtotal = float(subtotal)
             subtotal = tempSubtotal
         if "sub total" in line:
             tempSubtotal = list[-1]
-            tempSubtotal = re.sub("[@#$%^,&*(){}:‘'^A-Za-z]", "", tempSubtotal)
+            tempSubtotal = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempSubtotal)
+            tempSubtotal = tempSubtotal.replace(',', '')
             tempSubtotal = float(''.join(e for e in tempSubtotal))
             subtotal = float(subtotal)
             subtotal = tempSubtotal
         if "item" in line:
             totalItemsSold = list[-1]
-            totalItemsSold = re.sub("[@#$%^&,*(){}:‘'^A-Za-z]]", "", totalItemsSold)
+            totalItemsSold = re.sub("[@#$%^&*(){}:‘'^A-Za-z]]", "0", totalItemsSold)
+            totalItemsSold = totalItemsSold.replace(',', '')
             line = fp.readline().lower()
             continue
         if "discount" in line:
             discount = list[-1]
-            discount = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", discount)
+            discount = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", discount)
+            discount = discount.replace(',', '')
             discount = float(''.join(e for e in discount if e.isdigit() or e == '.'))
         if "(h)hst" in line:
             tempTax = list[-1]
-            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", tempTax)
+            tempTax = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempTax)
+            tempTax = tempTax.replace(',', '')
             tempTax = float(''.join(e for e in tempTax if e.isdigit() or e == '.'))
             tax = float(tax)
             tax += tempTax
         if "tax" in line:
             tempTax = list[-1]
-            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", tempTax)
+            tempTax = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempTax)
+            tempTax = tempTax.replace(',', '')
             tempTax = float(''.join(e for e in tempTax if e.isdigit() or e == '.'))
             tax = float(tax)
             tax += tempTax
         if "total" in line and "subtotal" not in line and "sub total" not in line:
             tempTotal = list[-1]
-            tempTotal = re.sub("[@#$%^&*,(){}:‘'^A-Za-z]", "", tempTotal)
+            tempTotal = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempTotal)
+            tempTotal = tempTotal.replace(',', '')
             tempTotal = float(''.join(e for e in tempTotal if e.isdigit() or e == '.'))
             total = float(total)
             total += tempTotal
@@ -159,9 +172,9 @@ for i in temp:
         organization = i[0]
         break
 
-resultList = {"billIssuedBy": organization, "receiptDate": receiptDate, "totalItemsPurchased": int(totalItemsSold),
-              "subtotal": subtotal, "tax": round(float(tax), 2), "totalBillAfterTax": round(float(total), 2),
-              "totalDiscount": round(float(discount), 2)}
+resultList = {"Bill issued by": organization, "Receipt Date": receiptDate, "Total items purchased": int(totalItemsSold),
+              "Subtotal": subtotal, "Tax": round(float(tax), 2), "Total bill after tax": round(float(total), 2),
+              "Total discount": round(float(discount), 2)}
 
 lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", "an giang coffee": "beverage",
           "aroma espresso bar": "beverage", "barcaffe": "beverage", "baristas": "beverage", "bewley's": "beverage",
@@ -593,11 +606,17 @@ lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", 
 distribution = {}
 
 for i in items.keys():
-    cat = lookup[i]
-    if cat in distribution.keys():
-        distribution[cat] += items[i]
+    if i.split()[0] in lookup.keys():
+        cat = lookup[i.split()[0]]
+        if cat in distribution.keys():
+            distribution[cat] += items[i]
+        else:
+            distribution[cat] = items[i]
     else:
-        distribution[cat] = items[i]
+        if 'others' in distribution.keys():
+            distribution['others'] += items[i]
+        else:
+            distribution['others'] = items[i]
 
 fixedList = []
 dynamicList = []
