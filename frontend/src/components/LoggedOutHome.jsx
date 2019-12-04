@@ -6,6 +6,7 @@ import dashboardSS from '../assets/img/dashboardSS.png';
 import fight from '../assets/img/fight.png';
 import steps from '../assets/img/steps.png';
 import free from '../assets/img/free.jpg';
+import hammer from '../assets/img/hammer.png';
 import './LoggedOutHome.css';
 import {Row, Col} from 'reactstrap';
 
@@ -70,6 +71,7 @@ export default class LoggedInHome extends Component {
                             <li>Easy Access and Real time monitoring</li>
                             <li>Analytics</li>
                         </ol>
+                        <img style={{'height':'400px','padding-left':'70px'}} src={hammer}/>
                     </div>
                 </Reveal>
                 <Reveal effect="flipInX" effectOut="fadeOutLeft">
@@ -77,7 +79,7 @@ export default class LoggedInHome extends Component {
                         <Row style={{'margin-left':'50px'}}>
                         <Col lg={7} >
                         <h1 style={{'margin-top':'50px'}}>Cost:</h1>
-                        <h3 style={{'float':'left'}}>Don’t worry it's all free. Just login and see the magic!</h3>
+                        <h3 style={{'float':'left'}}>Don’t worry it's all free. Just login and see the magic!s</h3>
                         </Col>
                         <Col lg={5}>
                         <img style={{'height':'350px', 'margin-left':'100px'}} src={free}/>
