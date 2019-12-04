@@ -1,3 +1,4 @@
+#This is running fine till now
 import pytesseract as pt
 import re
 import json
@@ -97,47 +98,40 @@ with open("text.txt") as fp:
         list = line.lower().split()
         if "subtotal" in line:
             tempSubtotal = list[-1]
-            tempSubtotal = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempSubtotal)
-            tempSubtotal = tempSubtotal.replace(',', '')
+            tempSubtotal = re.sub("[@#$%^&,*(){}:‘'^A-Za-z]", "", tempSubtotal)
             tempSubtotal = float(''.join(e for e in tempSubtotal))
             subtotal = float(subtotal)
             subtotal = tempSubtotal
         if "sub total" in line:
             tempSubtotal = list[-1]
-            tempSubtotal = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempSubtotal)
-            tempSubtotal = tempSubtotal.replace(',', '')
+            tempSubtotal = re.sub("[@#$%^,&*(){}:‘'^A-Za-z]", "", tempSubtotal)
             tempSubtotal = float(''.join(e for e in tempSubtotal))
             subtotal = float(subtotal)
             subtotal = tempSubtotal
         if "item" in line:
             totalItemsSold = list[-1]
-            totalItemsSold = re.sub("[@#$%^&*(){}:‘'^A-Za-z]]", "0", totalItemsSold)
-            totalItemsSold = totalItemsSold.replace(',', '')
+            totalItemsSold = re.sub("[@#$%^&,*(){}:‘'^A-Za-z]]", "", totalItemsSold)
             line = fp.readline().lower()
             continue
         if "discount" in line:
             discount = list[-1]
-            discount = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", discount)
-            discount = discount.replace(',', '')
+            discount = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", discount)
             discount = float(''.join(e for e in discount if e.isdigit() or e == '.'))
         if "(h)hst" in line:
             tempTax = list[-1]
-            tempTax = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempTax)
-            tempTax = tempTax.replace(',', '')
+            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", tempTax)
             tempTax = float(''.join(e for e in tempTax if e.isdigit() or e == '.'))
             tax = float(tax)
             tax += tempTax
         if "tax" in line:
             tempTax = list[-1]
-            tempTax = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempTax)
-            tempTax = tempTax.replace(',', '')
+            tempTax = re.sub("[@#$%^&*(),{}:‘'^A-Za-z]", "", tempTax)
             tempTax = float(''.join(e for e in tempTax if e.isdigit() or e == '.'))
             tax = float(tax)
             tax += tempTax
         if "total" in line and "subtotal" not in line and "sub total" not in line:
             tempTotal = list[-1]
-            tempTotal = re.sub("[@#$%^&*(){}:‘'^A-Za-z]", "0", tempTotal)
-            tempTotal = tempTotal.replace(',', '')
+            tempTotal = re.sub("[@#$%^&*,(){}:‘'^A-Za-z]", "", tempTotal)
             tempTotal = float(''.join(e for e in tempTotal if e.isdigit() or e == '.'))
             total = float(total)
             total += tempTotal
@@ -172,9 +166,9 @@ for i in temp:
         organization = i[0]
         break
 
-resultList = {"Bill issued by": organization, "Receipt Date": receiptDate, "Total items purchased": int(totalItemsSold),
-              "Subtotal": subtotal, "Tax": round(float(tax), 2), "Total bill after tax": round(float(total), 2),
-              "Total discount": round(float(discount), 2)}
+resultList = {"billIssuedBy": organization, "receiptDate": receiptDate, "totalItemsPurchased": int(totalItemsSold),
+              "subtotal": subtotal, "tax": round(float(tax), 2), "totalBillAfterTax": round(float(total), 2),
+              "totalDiscount": round(float(discount), 2)}
 
 lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", "an giang coffee": "beverage",
           "aroma espresso bar": "beverage", "barcaffe": "beverage", "baristas": "beverage", "bewley's": "beverage",
