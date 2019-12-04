@@ -21,11 +21,12 @@ module.exports = {
 		AUTHORIZATION_FAILED: 'Authorization failed'
 	},
 	DATA_FIELDS: {
-		BILL_ISSUED_BY: 'Bill Issued by',
+		BILL_ISSUED_BY: 'Bill issued by',
 		TOTAL_ITEMS_PURCHASED: 'Total items purchased',
 		SUBTOTAL: 'Subtotal',
 		TAX: 'Tax',
 		TOTAL_BILL_AFTER_TAX: 'Total bill after tax',
-		TOTAL_DISCOUNT: 'Total discount'
+		TOTAL_DISCOUNT: 'Total discount',
+		RECEIPT_DATE: 'Receipt Date'
 	}
 }

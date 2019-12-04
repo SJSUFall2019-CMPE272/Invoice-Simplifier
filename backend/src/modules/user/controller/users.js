@@ -57,8 +57,8 @@ exports.createUser = async (req, res) => {
  */
 exports.uploadInvoice = async (req, res) => {
 	try {
-		console.log("in upload invoice api", req.files.files, req.files.files.path)
-		let file = req.files.files
+		console.log("in upload invoice api", req, req.files.file)
+		let file = req.files.file
 		fs.readFile(file.path, function (err, data) {
 			if (err) console.log('err-->', err)
 			console.log('data---->', data)
@@ -76,7 +76,9 @@ exports.uploadInvoice = async (req, res) => {
 				var options = {
 					args:
 						[
-							data.Location
+							data.Location,
+							process.env.AWS_ACCESS_KEY,
+							process.env.AWS_SECRET_ACCESS_KEY
 						]
 				}
 				PythonShell.run(`${__dirname}/OCRecog/main.py`, options, async function (err, data) {
@@ -85,31 +87,13 @@ exports.uploadInvoice = async (req, res) => {
 						console.log('error in python script---->', err)
 						return res.status(500).send(err)
 					}
+					console.log('data received from python script before', data)
 					let dataObj = JSON.parse(data)
 					console.log('data received from python script', dataObj)
-					let resultObj = {}
-					for (var key in dataObj) {
-						if (dataObj.hasOwnProperty(key)) {
-							if (key === constants.DATA_FIELDS.BILL_ISSUED_BY) {
-								resultObj['billIssuedBy'] = dataObj[key]
-							} else if (key === constants.DATA_FIELDS.TOTAL_ITEMS_PURCHASED) {
-								resultObj['totalItemsPurchased'] = dataObj[key]
-							} else if (key === constants.DATA_FIELDS.SUBTOTAL) {
-								resultObj['subtotal'] = dataObj[key]
-							} else if (key === constants.DATA_FIELDS.TAX) {
-								resultObj['tax'] = dataObj[key]
-							} else if (key === constants.DATA_FIELDS.TOTAL_BILL_AFTER_TAX) {
-								resultObj['totalBillAfterTax'] = dataObj[key]
-							} else if (key === constants.DATA_FIELDS.TOTAL_DISCOUNT) {
-								resultObj['totalDiscount'] = dataObj[key]
-							}
-						}
-					}
-					let invoiceId = uuid()
-					resultObj['invoiceId'] = invoiceId
+					let resultObj = dataObj
 					console.log('Result Object', resultObj)
 					console.log('userId-->', req.params.userId)
-					await Users.updateOne({ uid: req.params.userId }, { $push: { invoicesData: resultObj } })
+					// await Users.updateOne({ uid: req.params.userId }, { $push: { invoicesData: resultObj } })
 
 					res.status(200).send(resultObj)
 				})
