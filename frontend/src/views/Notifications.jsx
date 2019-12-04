@@ -83,7 +83,7 @@ class Notifications extends React.Component {
       }
     })
     .then(res => { // then print response status
-      console.log(res.data.Fixed[0]);
+      console.log(res.data);
       if(res.status == 200){
         var iKeys = [];
         var iVals = [];

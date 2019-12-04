@@ -249,15 +249,21 @@ class Dashboard extends React.Component {
           console.log(res.data);
           var history = [];
           var i;
-          for(i = res.data.length-1; i >= res.data.length-5; i--){
+          console.log("res.data length ", res.data.length);
+          if(res.data.length != 0){
+          for(i = res.data.length-1; i >= 0; i--){
             history.push(<tr><td>{res.data[i].billIssuedBy}</td><td>{res.data[i].receiptDate}</td><td>{res.data[i].totalBillAfterTax}</td></tr>);
           }
-          var lastMonth = res.data[0].totalBillAfterTax;
+          if(res.data.length > 1){
+          var lastMonth = res.data[res.data.length-1].totalBillAfterTax;
           if(lastMonth == 0) lastMonth  = 1;
-          var thisMonth = res.data[1].totalBillAfterTax;
+          var thisMonth = res.data[res.data.length-2].totalBillAfterTax;
           var diff = ((lastMonth - thisMonth) / lastMonth) * 100;
           diff = Math.floor(diff);
-          this.setState({history: history, percent1: diff});
+          this.setState({ percent1: diff});
+          }
+          this.setState({history: history});
+        }
         }
       })
   }
