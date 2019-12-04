@@ -285,7 +285,7 @@ class Dashboard extends React.Component {
         />
         <div className="content">
           <Row>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={6}>
               <Card className="card-chart">
                 <CardHeader>
                   <CardTitle tag="h4">Discounts for {months[thisMo]} per Issuer</CardTitle>
@@ -306,45 +306,8 @@ class Dashboard extends React.Component {
                 </CardFooter>
               </Card>
             </Col>
-            <Col xs={12} md={4}>
-              <Card className="card-chart">
-                <CardHeader>
-                  <h5 className="card-category">2018 Sales</h5>
-                  <CardTitle tag="h4">All products</CardTitle>
-                  <UncontrolledDropdown>
-                    <DropdownToggle
-                      className="btn-round btn-outline-default btn-icon"
-                      color="default"
-                    >
-                      <i className="now-ui-icons loader_gear" />
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another Action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                      <DropdownItem className="text-danger">
-                        Remove data
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-area">
-                    <Line
-                      data={dashboardAllProductsChart.data}
-                      options={dashboardAllProductsChart.options}
-                    />
-                  </div>
-                </CardBody>
-                <CardFooter>
-                  <div className="stats">
-                    <i className="now-ui-icons arrows-1_refresh-69" /> Just
-                    Updated
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-            <Col xs={12} md={4}>
+            
+            <Col xs={12} md={6}>
               <Card className="card-chart">
                 <CardHeader>
                   <CardTitle tag="h4">Expenditure for {months[thisMo]} per Issuer</CardTitle>

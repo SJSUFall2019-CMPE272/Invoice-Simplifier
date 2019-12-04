@@ -315,8 +315,9 @@ class Notifications extends React.Component {
                   <CardTitle style={{'font-weight':'bold'}} tag="h4">Distribution</CardTitle>
                 </CardHeader>
                 <CardBody>
-              <Doughnut data={this.state.doughnutData.data} />
-              </CardBody>
+                    <Doughnut data={this.state.doughnutData.data} />
+                    {/* <Button color="primary">Save as CSV</Button> */}
+                </CardBody>
               </Card>
             </Col>
           </Row>}

@@ -63,19 +63,25 @@ export default class LoggedInHome extends Component {
                     </div>
                 </Reveal>
                 <Reveal effect="jackInTheBox" effectOut="fadeOutLeft">
-                    <div style={{'margin-left':'50px'}}>
+                    <div style={{'padding-left':'50px', 'padding-top':'50px', 'background-color':'rgb(0,193,141', 'color':'white'}}>
+                        <Row>
+                        <Col>
                         <h1>Product Impact:</h1>
-                        <ol style={{'font-size':'2em', 'color':'black'}}>
+                        <ol style={{'font-size':'2em', 'color':'white'}}>
                             <li>Reduce the cost of manual effort</li>
                             <li>Automate processes</li>
                             <li>Easy Access and Real time monitoring</li>
                             <li>Analytics</li>
                         </ol>
+                        </Col>
+                        <Col>
                         <img style={{'height':'400px','padding-left':'70px'}} src={hammer}/>
+                        </Col>
+                        </Row>
                     </div>
                 </Reveal>
                 <Reveal effect="flipInX" effectOut="fadeOutLeft">
-                    <div style={{'background-color':'rgb(122,196,183)'}}>
+                    <div style={{'background-color':'rgb(122,196,183)', 'color':'white'}}>
                         <Row style={{'margin-left':'50px'}}>
                         <Col lg={7} >
                         <h1 style={{'margin-top':'50px'}}>Cost:</h1>
