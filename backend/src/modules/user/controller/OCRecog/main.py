@@ -9,11 +9,11 @@ from datetime import date
 import boto3
 import os
 
-link = sys.argv[0]
+link = sys.argv[1]
 
 filename = link.split('/')[-1]
-s3 = boto3.resource('s3', aws_access_key_id='AKIAJ6W7C53L7BJHBFYQ',
-                    aws_secret_access_key='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')
+s3 = boto3.resource('s3', aws_access_key_id=sys.argv[2],
+                    aws_secret_access_key=sys.argv[3])
 s3.Bucket('invoice-simplifier-file-store').download_file(filename, filename)
 
 try:
@@ -35,8 +35,8 @@ if filename.split('.')[-1] == 'pdf':
 
 text = pt.image_to_string(filename)
 text = ''.join([i if ord(i) < 128 else ' ' for i in text])
-jar = './stanford-ner.jar'
-model = './english.all.3class.distsim.crf.ser.gz'
+jar = os.path.dirname(os.path.abspath(__file__)) + '/stanford-ner.jar'
+model = os.path.dirname(os.path.abspath(__file__)) +'/english.all.3class.distsim.crf.ser.gz'
 
 # Prepare NER tagger with english model
 ner_tagger = StanfordNERTagger(model, jar, encoding='utf8')
@@ -159,9 +159,9 @@ for i in temp:
         organization = i[0]
         break
 
-resultList = {"Bill issued by": organization, "Receipt Date": receiptDate, "Total items purchased": int(totalItemsSold),
-              "Subtotal": subtotal, "Tax": round(float(tax), 2), "Total bill after tax": round(float(total), 2),
-              "Total discount": round(float(discount), 2)}
+resultList = {"billIssuedBy": organization, "receiptDate": receiptDate, "totalItemsPurchased": int(totalItemsSold),
+              "subtotal": subtotal, "tax": round(float(tax), 2), "totalBillAfterTax": round(float(total), 2),
+              "totalDiscount": round(float(discount), 2)}
 
 lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", "an giang coffee": "beverage",
           "aroma espresso bar": "beverage", "barcaffe": "beverage", "baristas": "beverage", "bewley's": "beverage",
