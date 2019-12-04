@@ -255,10 +255,10 @@ class Dashboard extends React.Component {
             history.push(<tr><td>{res.data[i].billIssuedBy}</td><td>{res.data[i].receiptDate}</td><td>{res.data[i].totalBillAfterTax}</td></tr>);
           }
           if(res.data.length > 1){
-          var lastMonth = res.data[res.data.length-1].totalBillAfterTax;
+          var lastMonth = res.data[res.data.length-2].totalBillAfterTax;
           if(lastMonth == 0) lastMonth  = 1;
-          var thisMonth = res.data[res.data.length-2].totalBillAfterTax;
-          var diff = ((lastMonth - thisMonth) / lastMonth) * 100;
+          var thisMonth = res.data[res.data.length-1].totalBillAfterTax;
+          var diff = ((thisMonth - lastMonth) / lastMonth) * 100;
           diff = Math.floor(diff);
           this.setState({ percent1: diff});
           }
