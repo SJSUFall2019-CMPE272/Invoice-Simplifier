@@ -231,6 +231,44 @@ exports.getMonthlyStats = async (req, res) => {
 }
 
 /**
+ * Fetch monthly discount stats for a userid.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.getMonthlyDiscountStats = async (req, res) => {
+	console.log("userId-->", req.params.userId, req.query.month)
+	try {
+		let userObj = await Users.findOne({ uid: req.params.userId })
+		console.log("invoicesData-->", userObj.invoicesData)
+		let invoicesList = userObj.invoicesData
+		let resultObj = {}
+		for (let item of invoicesList) {
+			console.log("issued by", item.billIssuedBy)
+			if (item.receiptDate.split('/')[0] === req.query.month) {
+				if (resultObj.hasOwnProperty(item.billIssuedBy)) {
+					console.log("in ifff")
+					resultObj[item.billIssuedBy] = resultObj[item.billIssuedBy] + item.totalDiscount
+				} else if (!resultObj.hasOwnProperty(item.billIssuedBy)) {
+					console.log("in else")
+					resultObj[item.billIssuedBy] = item.totalDiscount
+				}
+				console.log("resultObj-->", resultObj)
+
+			}
+		}
+		let responseObj = {
+			issuedBy: Object.keys(resultObj),
+			totalDiscount: Object.values(resultObj)
+		}
+		console.log("finallllll  ------>resultObj-->", resultObj, responseObj)
+		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(responseObj)
+	} catch (error) {
+		console.log(`Error while fetching monthly stats ${error}`)
+		return res.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS).send(error.message)
+	}
+}
+
+/**
  * Fetch monthly expenditure for a userid.
  * @param  {Object} req request object
  * @param  {Object} res response object
