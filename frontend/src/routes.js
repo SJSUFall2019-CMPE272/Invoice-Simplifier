@@ -33,21 +33,7 @@ var dashRoutes = [
     layout: "/admin"
   },
   {
-    path: "/icons",
-    name: "Icons",
-    icon: "design_image",
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "location_map-big",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
+    path: "/addInvoice",
     name: "Add New Invoice",
     icon: "ui-1_simple-add",
     component: Notifications,
@@ -58,20 +44,6 @@ var dashRoutes = [
     name: "User Profile",
     icon: "users_single-02",
     component: UserPage,
-    layout: "/admin"
-  },
-  {
-    path: "/extended-tables",
-    name: "Table List",
-    icon: "files_paper",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "design-2_ruler-pencil",
-    component: Typography,
     layout: "/admin"
   }
   // {

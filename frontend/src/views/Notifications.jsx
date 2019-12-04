@@ -35,7 +35,8 @@ import {
   Label,
   Form,
   FormGroup,
-  Input
+  Input,
+  Table
 } from "reactstrap";
 
 // core components
@@ -49,14 +50,19 @@ class Notifications extends React.Component {
     result: null,
     doughnutVisible: false,
     billIssuedBy: null,
-    totalItemsPurchased: null,
+    totalItemsPurchased: 0,
     subtotal: null,
     tax: null,
     totalBillAfterTax: null,
     totalDiscount: null,
     invoiceId: null,
     showDoughnut: false,
-    doughnutData: { data: { datasets:[], labels:[] } }
+    doughnutData: { data: { datasets:[], labels:[] } },
+    itemKeys: [],
+    itemValues: [],
+    categoryKeys: [],
+    categoryValues: [],
+    receiptDate: null
   }
 
   fileSelectedHandler = event => {
@@ -77,16 +83,36 @@ class Notifications extends React.Component {
       }
     })
     .then(res => { // then print response status
-      if(res.status == 200){        
+      console.log(res.data.Fixed[0]);
+      if(res.status == 200){
+        var iKeys = [];
+        var iVals = [];
+        var cKeys = [];
+        var cVals = [];
+        var i;
+        for(i = 0; i < res.data.Items.length; i++){
+          iKeys.push(Object.keys(res.data.Items[i])[0]);
+          iVals.push(Object.values(res.data.Items[i])[0]);
+        }
+        for(i = 0; i < res.data.Category.length; i++){
+          cKeys.push(Object.keys(res.data.Category[i])[0]);
+          cVals.push(Object.values(res.data.Category[i])[0]);
+        }
+        console.log(res.data);
         this.setState({
           result: res.data, 
-          billIssuedBy: res.data.billIssuedBy,
-          totalItemsPurchased: res.data.totalItemsPurchased,
-          subtotal: res.data.subtotal,
-          tax: res.data.tax,
-          totalBillAfterTax: res.data.totalBillAfterTax,
-          totalDiscount: res.data.totalDiscount,
-          invoiceId: res.data.invoiceId
+          billIssuedBy: res.data.Fixed[0].billIssuedBy,
+          totalItemsPurchased: Number(res.data.Fixed[2].totalItemsPurchased),
+          subtotal: res.data.Fixed[3].subtotal,
+          tax: res.data.Fixed[4].tax,
+          totalBillAfterTax: res.data.Fixed[5].totalBillAfterTax,
+          totalDiscount: res.data.Fixed[6].totalDiscount,
+          invoiceId: res.data.invoiceId,
+          itemKeys: iKeys,
+          itemValues: iVals,
+          categoryKeys: cKeys,
+          categoryValues: cVals,
+          receiptDate: res.data.Fixed[1].receiptDate
         });
       }
     })
@@ -94,6 +120,8 @@ class Notifications extends React.Component {
   }
 
   fileEditHandler = () => {
+    console.log("file edit pressed" + this.state.totalBillAfterTax);
+
     axios.put("http://localhost:9000/users/updateInvoice/" + firebase.auth().currentUser.uid, {
       "billIssuedBy": this.state.billIssuedBy,
       "totalItemsPurchased": this.state.totalItemsPurchased,
@@ -101,18 +129,20 @@ class Notifications extends React.Component {
       "tax": this.state.tax,
       "totalBillAfterTax": this.state.totalBillAfterTax,
       "totalDiscount": this.state.totalDiscount,
-      "invoiceId": this.state.invoiceId
+      "invoiceId": this.state.invoiceId,
+      "receiptDate": this.state.receiptDate
     },{
       headers: {
         "Authorization": "Bearer " + localStorage.getItem('token')
       }
     })
     .then(res => {
+
       var dat = {
         data : {
-          labels: ['Subtotal', 'Tax', 'Total After Tax', 'Discount'],
+          labels: this.state.categoryKeys,
           datasets: [{
-            data: [this.state.subtotal, this.state.tax, this.state.totalBillAfterTax, this.state.totalDiscount],
+            data: this.state.categoryValues,
             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#123456'],
             hoverBackgroundColor: [
               '#FF6384',
@@ -141,6 +171,19 @@ class Notifications extends React.Component {
       labelAppear = null;
       uploadButton = null;
     }
+
+    var itemKeys = this.state.itemKeys;
+    var itemVals = this.state.itemValues;
+
+    var tableVals = [];
+    var i;
+    for (i = 0; i < itemKeys.length; i++) {
+      tableVals.push(<tr>
+        <td>{itemKeys[i]}</td>
+        <td>{itemVals[i]}</td>
+      </tr>);
+    }
+
     console.log("in render data: " + this.state.doughnutData.data.labels);
     return (
       <>
@@ -243,6 +286,24 @@ class Notifications extends React.Component {
                     {/* </FormGroup> */}
                     <Button onClick={this.fileEditHandler} type="submit" color="primary">Save</Button>
                   {/* </Form> */}
+                </CardBody>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle style={{'font-weight':'bold'}} tag="h4">Invoice details</CardTitle>
+                </CardHeader>
+                <CardBody>
+                    <Table>
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableVals}
+                    </tbody>
+                    </Table>
                 </CardBody>
               </Card>
             </Col> 

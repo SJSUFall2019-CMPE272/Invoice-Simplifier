@@ -19,6 +19,9 @@ import React from "react";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
 
+import firebase from 'firebase';
+import axios from 'axios';
+
 // reactstrap components
 import {
   Card,
@@ -51,14 +54,225 @@ import {
 } from "../variables/charts.jsx";
 
 class Dashboard extends React.Component {
+
+  state = {
+    monthlyExpenditure: null,
+    monthlyStats: null,
+    history: null,
+    percent: 0,
+    percent1: 0,
+    monthlyDiscounts: null
+  }
+
+  componentDidMount = () =>{
+      var d = new Date();
+      var m = d.getMonth()+1;
+      var month = "";
+      if(m < 10){
+        month += "0";
+      }
+      month += m.toString();
+      axios.get("http://localhost:9000/users/getMonthlyExpenditure/" + firebase.auth().currentUser.uid,{ 
+        // receive two    parameter endpoint url ,form data
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem('token')
+        }
+      })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          var canvas = document.createElement('canvas');
+          const ctx = canvas.getContext("2d");
+          var chartColor = "#FFFFFF";
+          var gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
+          gradientStroke.addColorStop(0, "#80b6f4");
+          gradientStroke.addColorStop(1, chartColor);
+          var gradientFill = ctx.createLinearGradient(0, 200, 0, 50);
+          gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
+          gradientFill.addColorStop(1, "rgba(255, 0, 255, 0.14)");
+          var dat = {
+            labels: [
+              "JAN",
+              "FEB",
+              "MAR",
+              "APR",
+              "MAY",
+              "JUN",
+              "JUL",
+              "AUG",
+              "SEP",
+              "OCT",
+              "NOV",
+              "DEC"
+            ],
+            datasets: [
+              {
+                label: "Data",
+                borderColor: chartColor,
+                pointBorderColor: chartColor,
+                pointBackgroundColor: "#2c2c2c",
+                pointHoverBackgroundColor: "#2c2c2c",
+                pointHoverBorderColor: chartColor,
+                pointBorderWidth: 1,
+                pointHoverRadius: 7,
+                pointHoverBorderWidth: 2,
+                pointRadius: 5,
+                fill: true,
+                backgroundColor: gradientFill,
+                borderWidth: 2,
+                data: [50, 150, 100, 190, 130, 90, 150, 160, 120, 140, 190, 95]
+              }
+            ]
+          }
+          dat.datasets[0].data = res.data.monthlyExpenditure;
+          var mo = d.getMonth();
+          var lastMonth = res.data.monthlyExpenditure[mo-1];
+          if(lastMonth == 0) lastMonth  = 1;
+          var thisMonth = res.data.monthlyExpenditure[mo];
+          var diff = ((thisMonth - lastMonth) / lastMonth) * 100;
+          diff = Math.floor(diff);
+          this.setState({monthlyExpenditure: dat, percent: diff});
+        }
+      });
+      axios.get("http://localhost:9000/users/getMonthlyStats/" + firebase.auth().currentUser.uid + "?month=" + month,{ 
+        // receive two    parameter endpoint url ,form data
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem('token')
+        }
+      })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext("2d");
+          var gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
+          gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
+          gradientFill.addColorStop(1, "rgba(44,168,255, 0.6)");
+          var dat = {
+            labels: [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December"
+            ],
+            datasets: [
+              {
+                label: "Total Spending",
+                backgroundColor: gradientFill,
+                borderColor: "#2CA8FF",
+                pointBorderColor: "#FFF",
+                pointBackgroundColor: "#2CA8FF",
+                pointBorderWidth: 2,
+                pointHoverRadius: 4,
+                pointHoverBorderWidth: 1,
+                pointRadius: 4,
+                fill: true,
+                borderWidth: 1,
+                data: [80, 99, 86, 96, 123, 85, 100, 75, 88, 90, 123, 155]
+              }
+            ]
+          }
+          dat.labels = res.data.issuedBy;
+          dat.datasets[0].data = res.data.totalBillAfterTax;
+          console.log(dat);
+          this.setState({monthlyStats: dat});
+        }
+      });
+      axios.get("http://localhost:9000/users/getMonthlyDiscountStats/" + firebase.auth().currentUser.uid + "?month=" + month,{ 
+        // receive two    parameter endpoint url ,form data
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem('token')
+        }
+      })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext("2d");
+          var gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
+          gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
+          gradientFill.addColorStop(1, "rgba(44,168,255, 0.6)");
+          var dat = {
+            labels: [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December"
+            ],
+            datasets: [
+              {
+                label: "Total Discounts",
+                backgroundColor: gradientFill,
+                borderColor: "#2CA8FF",
+                pointBorderColor: "#FFF",
+                pointBackgroundColor: "#2CA8FF",
+                pointBorderWidth: 2,
+                pointHoverRadius: 4,
+                pointHoverBorderWidth: 1,
+                pointRadius: 4,
+                fill: true,
+                borderWidth: 1,
+                data: [80, 99, 86, 96, 123, 85, 100, 75, 88, 90, 123, 155]
+              }
+            ]
+          }
+          dat.labels = res.data.issuedBy;
+          dat.datasets[0].data = res.data.totalDiscount;
+          console.log(dat);
+          this.setState({monthlyDiscounts: dat});
+        }
+      });
+      axios.get("http://localhost:9000/users/getInvoices/" + firebase.auth().currentUser.uid,{ 
+        // receive two    parameter endpoint url ,form data
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem('token')
+        }
+      })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          var history = [];
+          var i;
+          for(i = res.data.length-1; i >= res.data.length-5; i--){
+            history.push(<tr><td>{res.data[i].billIssuedBy}</td><td>{res.data[i].receiptDate}</td><td>{res.data[i].totalBillAfterTax}</td></tr>);
+          }
+          var lastMonth = res.data[0].totalBillAfterTax;
+          if(lastMonth == 0) lastMonth  = 1;
+          var thisMonth = res.data[1].totalBillAfterTax;
+          var diff = ((lastMonth - thisMonth) / lastMonth) * 100;
+          diff = Math.floor(diff);
+          this.setState({history: history, percent1: diff});
+        }
+      })
+  }
+
   render() {
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var date = new Date();
+    var thisMo = date.getMonth();
     return (
       <>
         <PanelHeader
           size="lg"
           content={
             <Line
-              data={dashboardPanelChart.data}
+              data={this.state.monthlyExpenditure}/*{dashboardPanelChart.data}*/
               options={dashboardPanelChart.options}
             />
           }
@@ -68,31 +282,14 @@ class Dashboard extends React.Component {
             <Col xs={12} md={4}>
               <Card className="card-chart">
                 <CardHeader>
-                  <h5 className="card-category">Global Sales</h5>
-                  <CardTitle tag="h4">Shipped Products</CardTitle>
-                  <UncontrolledDropdown>
-                    <DropdownToggle
-                      className="btn-round btn-outline-default btn-icon"
-                      color="default"
-                    >
-                      <i className="now-ui-icons loader_gear" />
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another Action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                      <DropdownItem className="text-danger">
-                        Remove data
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
+                  <CardTitle tag="h4">Discounts for {months[thisMo]} per Issuer</CardTitle>
                 </CardHeader>
                 <CardBody>
-                  <div className="chart-area">
-                    <Line
-                      data={dashboardShippedProductsChart.data}
-                      options={dashboardShippedProductsChart.options}
-                    />
+                <div className="chart-area">
+                    {(this.state.monthlyDiscounts != null) && <Bar
+                      data={(this.state.monthlyDiscounts != null) ? this.state.monthlyDiscounts : dashboard24HoursPerformanceChart.data}
+                      options={dashboard24HoursPerformanceChart.options}
+                    />}
                   </div>
                 </CardBody>
                 <CardFooter>
@@ -144,21 +341,17 @@ class Dashboard extends React.Component {
             <Col xs={12} md={4}>
               <Card className="card-chart">
                 <CardHeader>
-                  <h5 className="card-category">Email Statistics</h5>
-                  <CardTitle tag="h4">24 Hours Performance</CardTitle>
+                  <CardTitle tag="h4">Expenditure for {months[thisMo]} per Issuer</CardTitle>
                 </CardHeader>
                 <CardBody>
                   <div className="chart-area">
-                    <Bar
-                      data={dashboard24HoursPerformanceChart.data}
+                    {(this.state.monthlyStats != null) && <Bar
+                      data={(this.state.monthlyStats != null) ? this.state.monthlyStats : dashboard24HoursPerformanceChart.data}
                       options={dashboard24HoursPerformanceChart.options}
-                    />
+                    />}
                   </div>
                 </CardBody>
                 <CardFooter>
-                  <div className="stats">
-                    <i className="now-ui-icons ui-2_time-alarm" /> Last 7 days
-                  </div>
                 </CardFooter>
               </Card>
             </Col>
@@ -168,143 +361,21 @@ class Dashboard extends React.Component {
               <Card className="card-tasks">
                 <CardHeader>
                   <h5 className="card-category">Backend Development</h5>
-                  <CardTitle tag="h4">Tasks</CardTitle>
+                  <CardTitle tag="h4">Misc</CardTitle>
                 </CardHeader>
                 <CardBody>
                   <div className="table-full-width table-responsive">
                     <Table>
                       <tbody>
-                        <tr>
-                          <td>
-                            <FormGroup check>
-                              <Label check>
-                                <Input defaultChecked type="checkbox" />
-                                <span className="form-check-sign" />
-                              </Label>
-                            </FormGroup>
-                          </td>
-                          <td className="text-left">
-                            Sign contract for "What are conference organizers
-                            afraid of?"
-                          </td>
-                          <td className="td-actions text-right">
-                            <Button
-                              className="btn-round btn-icon btn-icon-mini btn-neutral"
-                              color="info"
-                              id="tooltip731609871"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-2_settings-90" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip731609871"
-                            >
-                              Edit Task
-                            </UncontrolledTooltip>
-                            <Button
-                              className="btn-round btn-icon btn-icon-mini btn-neutral"
-                              color="danger"
-                              id="tooltip923217206"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip923217206"
-                            >
-                              Remove
-                            </UncontrolledTooltip>
+                        <tr style={{ 'margin-bottom':'100px'}}>
+                          <td style={{'font-size':'1.3em'}}>
+                            Your monthly expenditure has {(this.state.percent < 0) ? <span style={{'color':'green', 'font-weight':'bold'}}>decreased</span> : <span style={{'color':'red', 'font-weight':'bold'}}>increased</span>} by {Math.abs(this.state.percent)}%
                           </td>
                         </tr>
+                        <br/>
                         <tr>
-                          <td>
-                            <FormGroup check>
-                              <Label check>
-                                <Input type="checkbox" />
-                                <span className="form-check-sign" />
-                              </Label>
-                            </FormGroup>
-                          </td>
-                          <td className="text-left">
-                            Lines From Great Russian Literature? Or E-mails From
-                            My Boss?
-                          </td>
-                          <td className="td-actions text-right">
-                            <Button
-                              className="btn-round btn-icon btn-icon-mini btn-neutral"
-                              color="info"
-                              id="tooltip907509347"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-2_settings-90" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip907509347"
-                            >
-                              Edit Task
-                            </UncontrolledTooltip>
-                            <Button
-                              className="btn-round btn-icon btn-icon-mini btn-neutral"
-                              color="danger"
-                              id="tooltip496353037"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip496353037"
-                            >
-                              Remove
-                            </UncontrolledTooltip>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <FormGroup check>
-                              <Label check>
-                                <Input defaultChecked type="checkbox" />
-                                <span className="form-check-sign" />
-                              </Label>
-                            </FormGroup>
-                          </td>
-                          <td className="text-left">
-                            Flooded: One year later, assessing what was lost and
-                            what was found when a ravaging rain swept through
-                            metro Detroit
-                          </td>
-                          <td className="td-actions text-right">
-                            <Button
-                              className="btn-round btn-icon btn-icon-mini btn-neutral"
-                              color="info"
-                              id="tooltip326247652"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-2_settings-90" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip326247652"
-                            >
-                              Edit Task
-                            </UncontrolledTooltip>
-                            <Button
-                              className="btn-round btn-icon btn-icon-mini btn-neutral"
-                              color="danger"
-                              id="tooltip389516969"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip389516969"
-                            >
-                              Remove
-                            </UncontrolledTooltip>
+                          <td style={{'font-size':'1.3em'}}>
+                            Your expenditure since the last invoice upload has {(this.state.percent1 < 0) ? <span style={{'color':'green', 'font-weight':'bold'}}>decreased</span> : <span style={{'color':'red', 'font-weight':'bold'}}>increased</span>} by {Math.abs(this.state.percent1)}%
                           </td>
                         </tr>
                       </tbody>
@@ -323,21 +394,19 @@ class Dashboard extends React.Component {
             <Col xs={12} md={6}>
               <Card>
                 <CardHeader>
-                  <h5 className="card-category">All Persons List</h5>
-                  <CardTitle tag="h4">Employees Stats</CardTitle>
+                  <CardTitle tag="h4">Upload History</CardTitle>
                 </CardHeader>
                 <CardBody>
                   <Table responsive>
                     <thead className="text-primary">
                       <tr>
-                        <th>Name</th>
-                        <th>Country</th>
-                        <th>City</th>
-                        <th className="text-right">Salary</th>
+                        <th>Issued By</th>
+                        <th>Date</th>
+                        <th>Total</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      {/* <tr>
                         <td>Dakota Rice</td>
                         <td>Niger</td>
                         <td>Oud-Turnhout</td>
@@ -366,7 +435,8 @@ class Dashboard extends React.Component {
                         <td>Chile</td>
                         <td>Gloucester</td>
                         <td className="text-right">$78,615</td>
-                      </tr>
+                      </tr> */}
+                      {this.state.history}
                     </tbody>
                   </Table>
                 </CardBody>

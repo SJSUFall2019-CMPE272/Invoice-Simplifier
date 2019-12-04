@@ -50,7 +50,7 @@ class User extends React.Component {
                 <CardBody>
                   <Form>
                     <Row>
-                      <Col className="pl-1" md="6">
+                      <Col className="pr-1" md="6">
                         <FormGroup>
                           <label htmlFor="exampleInputEmail1">
                             Email address
@@ -94,35 +94,7 @@ class User extends React.Component {
                   </div>
                 </CardBody>
                 <hr />
-                <div className="button-container">
-                  <Button
-                    className="btn-neutral btn-icon btn-round"
-                    color="default"
-                    href="#pablo"
-                    onClick={e => e.preventDefault()}
-                    size="lg"
-                  >
-                    <i className="fab fa-facebook-f" />
-                  </Button>
-                  <Button
-                    className="btn-neutral btn-icon btn-round"
-                    color="default"
-                    href="#pablo"
-                    onClick={e => e.preventDefault()}
-                    size="lg"
-                  >
-                    <i className="fab fa-twitter" />
-                  </Button>
-                  <Button
-                    className="btn-neutral btn-icon btn-round"
-                    color="default"
-                    href="#pablo"
-                    onClick={e => e.preventDefault()}
-                    size="lg"
-                  >
-                    <i className="fab fa-google-plus-g" />
-                  </Button>
-                </div>
+                
               </Card>
             </Col>
           </Row>
