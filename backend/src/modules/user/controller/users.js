@@ -182,7 +182,7 @@ exports.updateInvoice = async (req, res) => {
 exports.getInvoices = async (req, res) => {
 	console.log("userId-->", req.params.userId)
 	try {
-		let userObj = await Users.findOne({ uid: req.params.userId, 'invoicesData.invoiceId': req.body.invoiceId })
+		let userObj = await Users.findOne({ uid: req.params.userId }, {'_id' : 0, 'invoicesData.items':0, 'invoicesData.categorization':0, 'invoicesData.totalItemsPurchased':0, 'invoicesData.tax':0, 'invoicesData.totalDiscount':0})
 		console.log("userObj-->", userObj)
 		let invoiceList = userObj.invoicesData
 		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(invoiceList)
