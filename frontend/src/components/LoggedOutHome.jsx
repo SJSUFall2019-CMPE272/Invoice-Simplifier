@@ -17,7 +17,7 @@ export default class LoggedInHome extends Component {
             <div>
                 <LoggedOutNavBar/>
                 <Reveal effect="fadeInRight" effectOut="fadeOutLeft">
-                    <div style={{'padding':'50px'}}>
+                    <div className="div0" style={{'padding':'50px'}}>
                     <h1 style={{'font-weight':'bold'}}>Invoice Simplifier:</h1>
                     <h3>Invoice simplifier is a productivity application that tracks and analyses your expenses using invoice photos, thus eliminating the need for you to spend hours managing your expenses and budget.</h3>
                     <img style={{'height':'400px','padding-left':'100px'}} src={invoiceGIF}/>
@@ -25,14 +25,7 @@ export default class LoggedInHome extends Component {
                     <img style={{'height':'400px','padding-left':'70px'}} src={dashboardSS}/>
                     </div>
                 </Reveal>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
+                
                 <Reveal effect="fadeInLeft" effectOut="fadeOutLeft">
                     <div className='div1'>
                         <h1 style={{'color':'white'}}>There are many problems with manual keeping:</h1>
@@ -47,7 +40,7 @@ export default class LoggedInHome extends Component {
                     </div>
                 </Reveal>
                 <Reveal effect="fadeIn" effectOut="rotateOutDownLeft">
-                    <div style={{'background-color':'rgb(0,183,249)', 'padding':'50px', 'height':'500px'}}>
+                    <div className="div2" style={{'background-color':'rgb(0,183,249)', 'padding':'50px', 'height':'500px'}}>
                         <img style={{'float':'left','height':'300px'}} src={steps}/>
                         <h1 style={{'color':'white', 'float':'right'}}>How simple our application is:</h1>
                         <ol style={{'float':'right', 'font-size':'2em','color':'white', 'margin-right':'150px'}}>
@@ -63,7 +56,7 @@ export default class LoggedInHome extends Component {
                     </div>
                 </Reveal>
                 <Reveal effect="jackInTheBox" effectOut="fadeOutLeft">
-                    <div style={{'padding-left':'50px', 'padding-top':'50px', 'background-color':'rgb(0,193,141', 'color':'white'}}>
+                    <div className="div3" style={{'padding-left':'50px', 'padding-top':'50px', 'background-color':'rgb(0,193,141', 'color':'white'}}>
                         <Row>
                         <Col>
                         <h1>Product Impact:</h1>
