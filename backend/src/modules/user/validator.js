@@ -32,7 +32,7 @@ module.exports = {
 		body: {
 			invoiceId: Joi.string().required(),
 			billIssuedBy: Joi.string(),
-			totalItemsPurchased: Joi.string(),
+			totalItemsPurchased: Joi.number(),
 			subtotal: Joi.number(),
 			tax: Joi.number(),
 			totalBillAfterTax: Joi.number(),
