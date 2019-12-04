@@ -241,8 +241,11 @@ exports.getMonthlyExpenditure = async (req, res) => {
 				resultObj.December += item.totalBillAfterTax
 			}
 		}
+		let responseObj = {
+			monthlyExpenditure : Object.values(resultObj)
+		}
 		console.log("resultObj-->", resultObj)
-		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(resultObj)
+		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(responseObj)
 	} catch (error) {
 		console.log(`Error while fetching monthly expenditure ${error}`)
 		return res.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS).send(error.message)
