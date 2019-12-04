@@ -16,5 +16,6 @@ router.put('/updateInvoice/:userId', validation(validator['updateInvoice']), pas
 router.get('/getInvoices/:userId', validation(validator['getInvoices']), passport.authenticate('jwt', { session: false }), userController.getInvoices)
 router.get('/getMonthlyStats/:userId', validation(validator['getMonthlyStats']), passport.authenticate('jwt', { session: false }), userController.getMonthlyStats)
 router.get('/getMonthlyExpenditure/:userId', validation(validator['getMonthlyExpenditure']), passport.authenticate('jwt', { session: false }), userController.getMonthlyExpenditure)
+router.get('/getMonthlyDiscountStats/:userId', validation(validator['getMonthlyStats']), passport.authenticate('jwt', { session: false }), userController.getMonthlyDiscountStats)
 
 module.exports = router
