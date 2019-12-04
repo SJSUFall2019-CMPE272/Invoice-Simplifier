@@ -272,7 +272,7 @@ class Dashboard extends React.Component {
           size="lg"
           content={
             <Line
-              data={this.state.monthlyExpenditure}/*{dashboardPanelChart.data}*/
+              data={(this.state.monthlyExpenditure != null) ? this.state.monthlyExpenditure : dashboardPanelChart.data}
               options={dashboardPanelChart.options}
             />
           }
