@@ -153,7 +153,7 @@ exports.uploadInvoice = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.updateInvoice = async (req, res) => {
-	console.log("userId & invoiceId-->", req.params.userId, req.body.invoiceId)
+	console.log("userId & invoiceId-->", req.params.userId, req.body.invoiceId, req.body)
 	try {
 		await Users.updateOne(
 			{ uid: req.params.userId, 'invoicesData.invoiceId': req.body.invoiceId },
@@ -163,7 +163,9 @@ exports.updateInvoice = async (req, res) => {
 					'invoicesData.$.totalItemsPurchased': req.body.totalItemsPurchased,
 					'invoicesData.$.subtotal': req.body.subtotal,
 					'invoicesData.$.tax': req.body.tax,
-					'invoicesData.$.totalDiscount': req.body.totalDiscount
+					'invoicesData.$.totalDiscount': req.body.totalDiscount,
+					'invoicesData.$.receiptDate': req.body.receiptDate,
+					'invoicesData.$.totalBillAfterTax': req.body.totalBillAfterTax
 				}
 			}
 		)
