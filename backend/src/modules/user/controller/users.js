@@ -87,15 +87,56 @@ exports.uploadInvoice = async (req, res) => {
 						console.log('error in python script---->', err)
 						return res.status(500).send(err)
 					}
-					console.log('data received from python script before', data)
 					let dataObj = JSON.parse(data)
 					console.log('data received from python script', dataObj)
 					let resultObj = dataObj
 					console.log('Result Object', resultObj)
 					console.log('userId-->', req.params.userId)
-					// await Users.updateOne({ uid: req.params.userId }, { $push: { invoicesData: resultObj } })
 
-					res.status(200).send(resultObj)
+					let newObj = {}
+					for (let i = 0; i < 7; i++) {
+						console.log("forrrrr", i)
+						if (i === 0) {
+							newObj['billIssuedBy'] = resultObj.Fixed[i].billIssuedBy
+							console.log("if if", newObj.billIssuedBy)
+						} else if (i === 1) {
+							newObj['receiptDate'] = resultObj.Fixed[i].receiptDate
+						} else if (i === 2) {
+							newObj['totalItemsPurchased'] = resultObj.Fixed[i].totalItemsPurchased
+						} else if (i === 3) {
+							newObj['subtotal'] = resultObj.Fixed[i].subtotal
+						} else if (i === 4) {
+							newObj['tax'] = resultObj.Fixed[i].tax
+						} else if (i === 5) {
+							newObj['totalBillAfterTax'] = resultObj.Fixed[i].totalBillAfterTax
+						} else if (i === 6) {
+							newObj['totalDiscount'] = resultObj.Fixed[i].totalDiscount
+						}
+
+					}
+					newObj.items = []
+					for (let i = 0; i < resultObj.Items.length; i++) {
+						newObj.items.push(resultObj.Items[i]);
+					}
+					newObj.categorization = []
+					for (let i = 0; i < resultObj.Category.length; i++) {
+						newObj.categorization.push(resultObj.Category[i]);
+					}
+					let invoiceId = uuid()
+					resultObj['invoiceId'] = invoiceId
+					newObj['invoiceId'] = invoiceId
+					console.log('data2222--->', newObj)
+					console.log('data2222--->', resultObj)
+					try {
+						let query = await Users.updateOne({ uid: req.params.userId }, { $push: { invoicesData: newObj } })
+						console.log('queryyy-->', query)
+						res.status(200).send(resultObj)
+					} catch (error) {
+						console.log('error-->', error)
+
+					}
+
+
 				})
 			});
 
@@ -165,11 +206,11 @@ exports.getMonthlyStats = async (req, res) => {
 		let resultObj = {}
 		for (let item of invoicesList) {
 			console.log("issued by", item.billIssuedBy)
-			if (item.date.split('/')[0] === req.query.month) {
+			if (item.receiptDate.split('/')[0] === req.query.month) {
 				if (resultObj.hasOwnProperty(item.billIssuedBy)) {
 					console.log("in ifff")
 					resultObj[item.billIssuedBy] = resultObj[item.billIssuedBy] + item.totalBillAfterTax
-				} else if(!resultObj.hasOwnProperty(item.billIssuedBy)) {
+				} else if (!resultObj.hasOwnProperty(item.billIssuedBy)) {
 					console.log("in else")
 					resultObj[item.billIssuedBy] = item.totalBillAfterTax
 				}
@@ -178,10 +219,10 @@ exports.getMonthlyStats = async (req, res) => {
 			}
 		}
 		let responseObj = {
-			issuedBy : Object.keys(resultObj),
-			totalBillAfterTax : Object.values(resultObj)
+			issuedBy: Object.keys(resultObj),
+			totalBillAfterTax: Object.values(resultObj)
 		}
-		console.log("finallllll  ------>resultObj-->", resultObj,responseObj)
+		console.log("finallllll  ------>resultObj-->", resultObj, responseObj)
 		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(responseObj)
 	} catch (error) {
 		console.log(`Error while fetching monthly stats ${error}`)
@@ -215,34 +256,34 @@ exports.getMonthlyExpenditure = async (req, res) => {
 			'December': 0,
 		}
 		for (let item of invoicesList) {
-			if (item.date.split('/')[0] === '01') {
+			if (item.receiptDate.split('/')[0] === '01') {
 				resultObj.January += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '02') {
+			} else if (item.receiptDate.split('/')[0] === '02') {
 				resultObj.February += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '03') {
+			} else if (item.receiptDate.split('/')[0] === '03') {
 				resultObj.March += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '04') {
+			} else if (item.receiptDate.split('/')[0] === '04') {
 				resultObj.April += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '05') {
+			} else if (item.receiptDate.split('/')[0] === '05') {
 				resultObj.May += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '06') {
+			} else if (item.receiptDate.split('/')[0] === '06') {
 				resultObj.June += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '07') {
+			} else if (item.receiptDate.split('/')[0] === '07') {
 				resultObj.July += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '08') {
+			} else if (item.receiptDate.split('/')[0] === '08') {
 				resultObj.August += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '09') {
+			} else if (item.receiptDate.split('/')[0] === '09') {
 				resultObj.September += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '10') {
+			} else if (item.receiptDate.split('/')[0] === '10') {
 				resultObj.October += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '11') {
+			} else if (item.receiptDate.split('/')[0] === '11') {
 				resultObj.November += item.totalBillAfterTax
-			} else if (item.date.split('/')[0] === '12') {
+			} else if (item.receiptDate.split('/')[0] === '12') {
 				resultObj.December += item.totalBillAfterTax
 			}
 		}
 		let responseObj = {
-			monthlyExpenditure : Object.values(resultObj)
+			monthlyExpenditure: Object.values(resultObj)
 		}
 		console.log("resultObj-->", resultObj)
 		return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(responseObj)

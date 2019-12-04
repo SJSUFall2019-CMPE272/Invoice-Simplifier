@@ -24,12 +24,14 @@ const Users = new mongoose.Schema({
 	invoicesData: [{
 		invoiceId: String,
 		billIssuedBy : String,
-		totalItemsPurchased : String,
+		totalItemsPurchased : Number,
 		subTotal : Number,
 		tax : Number,
 		totalBillAfterTax : Number,
 		totalDiscount: Number,
-		receiptDate: String
+		receiptDate: String,
+		items: [Object],
+		categorization : [Object]
 	}]
 })
 

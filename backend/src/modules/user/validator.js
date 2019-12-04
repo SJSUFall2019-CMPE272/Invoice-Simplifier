@@ -36,7 +36,8 @@ module.exports = {
 			subtotal: Joi.number(),
 			tax: Joi.number(),
 			totalBillAfterTax: Joi.number(),
-			totalDiscount: Joi.number()
+			totalDiscount: Joi.number(),
+			receiptDate: Joi.string()
 		},
 		header: {
 			authorization: Joi.string().required()
