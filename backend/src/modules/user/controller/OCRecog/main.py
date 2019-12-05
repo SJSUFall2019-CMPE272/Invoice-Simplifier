@@ -42,9 +42,6 @@ model = os.path.dirname(os.path.abspath(__file__)) +'/english.all.3class.distsim
 # Prepare NER tagger with english model
 ner_tagger = StanfordNERTagger(model, jar, encoding='utf8')
 
-# Tokenize: Split sentence into words
-words = nltk.word_tokenize(text)
-
 fs = open("text.txt", 'w')
 fs.write(text)
 fs.close()
@@ -95,6 +92,15 @@ receiptDate = "N/A"
 with open("text.txt") as fp:
     line = fp.readline().lower()
     while line:
+        if organization == '':
+            # Tokenize: Split sentence into words
+            words = nltk.word_tokenize(line)
+            words = [i.upper() for i in words]
+            temp = ner_tagger.tag(words)
+            for i in temp:
+                if i[1] == 'ORGANIZATION' or i[0] == 'WALMART' or i[0] == 'COSTCO' or i[0] == 'APNABAZAAR' or i[0] == 'AMAZON' or i[0] == 'MICROSOFT':
+                    organization = i[0]
+                    break
         list = line.lower().split()
         if "subtotal" in line:
             tempSubtotal = list[-1]
@@ -160,11 +166,6 @@ if subtotal == 0:
 if receiptDate == "N/A":
     receiptDate = str(date.today())
 
-temp = ner_tagger.tag(words)
-for i in temp:
-    if i[1] == 'ORGANIZATION':
-        organization = i[0]
-        break
 
 resultList = {"billIssuedBy": organization, "receiptDate": receiptDate, "totalItemsPurchased": int(totalItemsSold),
               "subtotal": subtotal, "tax": round(float(tax), 2), "totalBillAfterTax": round(float(total), 2),
@@ -332,7 +333,7 @@ lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", 
           "a&e": "electronics", "a.saks": "electronics", "abc": "electronics", "acer": "electronics",
           "adesso": "electronics", "aduro": "electronics", "aftershokz": "electronics",
           "aimee kestenberg": "electronics", "alcatel": "electronics", "alesis": "electronics", "ally": "electronics",
-          "aluratek": "electronics", "amazon": "electronics", "amc": "electronics", "amped wireless": "electronics",
+          "aluratek": "electronics", "amazon": "software", "amc": "electronics", "amped wireless": "electronics",
           "antennas direct": "electronics", "antop": "electronics", "ape case": "electronics", "apple": "electronics",
           "arcade1up": "electronics", "arlo": "electronics", "astro gaming": "electronics", "asus": "electronics",
           "at&t": "electronics", "atari": "electronics", "atomxs": "electronics", "audio-technica": "electronics",
@@ -391,7 +392,7 @@ lookup = {"85C Bakery Cafe": "beverage", "alterra coffee roasters": "beverage", 
           "logitech": "electronics", "lori greiner": "electronics", "lovehandle": "electronics",
           "macally": "electronics", "magic chef": "electronics", "magnavox": "electronics",
           "matr boomie": "electronics", "megamounts": "electronics", "memorex": "electronics",
-          "microsoft": "electronics", "midland": "electronics", "mightyskins": "electronics",
+          "microsoft": "software", "midland": "electronics", "mightyskins": "electronics",
           "mill creek entertainment": "electronics", "milo": "electronics", "mindscope": "electronics",
           "minolta": "electronics", "mlb": "electronics", "mobilespec": "electronics", "moft": "electronics",
           "mohu": "electronics", "momentum": "electronics", "monster cable": "electronics", "monument": "electronics",
