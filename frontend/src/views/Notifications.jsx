@@ -76,7 +76,7 @@ class Notifications extends React.Component {
     var da = this.state.selectedFile.name;
     data.append('file', this.state.selectedFile);
     this.setState({loaderClass: "fa fa-spinner fa-spin"});
-    axios.post("http://localhost:9000/users/uploadInvoice/" + firebase.auth().currentUser.uid, data, { 
+    axios.post("http://35.153.207.33:9000/users/uploadInvoice/" + firebase.auth().currentUser.uid, data, { 
       // receive two    parameter endpoint url ,form data
       headers: {
         "Authorization": "Bearer " + localStorage.getItem('token')
@@ -122,7 +122,7 @@ class Notifications extends React.Component {
   fileEditHandler = () => {
     console.log("file edit pressed" + this.state.totalBillAfterTax);
 
-    axios.put("http://localhost:9000/users/updateInvoice/" + firebase.auth().currentUser.uid, {
+    axios.put("http://35.153.207.33:9000/users/updateInvoice/" + firebase.auth().currentUser.uid, {
       "billIssuedBy": this.state.billIssuedBy,
       "totalItemsPurchased": this.state.totalItemsPurchased,
       "subtotal": this.state.subtotal,

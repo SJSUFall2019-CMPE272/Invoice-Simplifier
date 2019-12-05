@@ -72,7 +72,7 @@ class Dashboard extends React.Component {
         month += "0";
       }
       month += m.toString();
-      axios.get("http://localhost:9000/users/getMonthlyExpenditure/" + firebase.auth().currentUser.uid,{ 
+      axios.get("http://35.153.207.33:9000/users/getMonthlyExpenditure/" + firebase.auth().currentUser.uid,{ 
         // receive two    parameter endpoint url ,form data
         headers: {
           "Authorization": "Bearer " + localStorage.getItem('token')
@@ -134,7 +134,7 @@ class Dashboard extends React.Component {
           this.setState({monthlyExpenditure: dat, percent: diff});
         }
       });
-      axios.get("http://localhost:9000/users/getMonthlyStats/" + firebase.auth().currentUser.uid + "?month=" + month,{ 
+      axios.get("http://35.153.207.33:9000/users/getMonthlyStats/" + firebase.auth().currentUser.uid + "?month=" + month,{ 
         // receive two    parameter endpoint url ,form data
         headers: {
           "Authorization": "Bearer " + localStorage.getItem('token')
@@ -186,7 +186,7 @@ class Dashboard extends React.Component {
           this.setState({monthlyStats: dat});
         }
       });
-      axios.get("http://localhost:9000/users/getMonthlyDiscountStats/" + firebase.auth().currentUser.uid + "?month=" + month,{ 
+      axios.get("http://35.153.207.33:9000/users/getMonthlyDiscountStats/" + firebase.auth().currentUser.uid + "?month=" + month,{ 
         // receive two    parameter endpoint url ,form data
         headers: {
           "Authorization": "Bearer " + localStorage.getItem('token')
@@ -238,7 +238,7 @@ class Dashboard extends React.Component {
           this.setState({monthlyDiscounts: dat});
         }
       });
-      axios.get("http://localhost:9000/users/getInvoices/" + firebase.auth().currentUser.uid,{ 
+      axios.get("http://35.153.207.33:9000/users/getInvoices/" + firebase.auth().currentUser.uid,{ 
         // receive two    parameter endpoint url ,form data
         headers: {
           "Authorization": "Bearer " + localStorage.getItem('token')

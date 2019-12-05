@@ -49,7 +49,7 @@ class Login extends Component {
     render(){
         var action;
         if(this.state.isSignedIn) {
-            axios.post("http://localhost:9000/users/createUser/", {
+            axios.post("http://35.153.207.33:9000/users/createUser/", {
                 "name": firebase.auth().currentUser.displayName,
                 "email": firebase.auth().currentUser.email,
                 "uid": firebase.auth().currentUser.uid
